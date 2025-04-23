@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: providerconfigusages.template.upbound.io
+  name: providerconfigusages.cloudamqp.evaneos.com
 spec:
-  group: template.upbound.io
+  group: cloudamqp.evaneos.com
   names:
     categories:
     - crossplane
     - provider
-    - template
+    - cloudamqp
     kind: ProviderConfigUsage
     listKind: ProviderConfigUsageList
     plural: providerconfigusages

@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: storeconfigs.template.upbound.io
+  name: storeconfigs.cloudamqp.evaneos.com
 spec:
-  group: template.upbound.io
+  group: cloudamqp.evaneos.com
   names:
     categories:
     - crossplane
     - store
-    - template
+    - cloudamqp
     kind: StoreConfig
     listKind: StoreConfigList
     plural: storeconfigs
@@ -31,7 +31,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: A StoreConfig configures how template controller should store
+        description: A StoreConfig configures how cloudamqp controller should store
           connection details.
         properties:
           apiVersion:

@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "template.upbound.io"
+	Group   = "cloudamqp.evaneos.com"
 	Version = "v1beta1"
 )
 

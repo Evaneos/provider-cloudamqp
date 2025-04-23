@@ -1,40 +1,2594 @@
-name: hashicorp/null
+name: cloudamqp/cloudamqp
 resources:
-    null_resource:
+    cloudamqp_account_action:
         subCategory: ""
-        description: The null_resource resource implements the standard resource lifecycle but takes no further action. On Terraform 1.4 and later, use the terraform_data resource type https://developer.hashicorp.com/terraform/language/resources/terraform-data instead. The triggers argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.
-        name: null_resource
-        title: null_resource Resource - terraform-provider-null
+        description: Invoke account action
+        name: cloudamqp_account_action
+        title: cloudamqp_account_action
         examples:
-            - name: cluster
+            - name: rotate-password
               manifest: |-
                 {
-                  "connection": [
-                    {
-                      "host": "${element(aws_instance.cluster[*].public_ip, 0)}"
-                    }
-                  ],
-                  "provisioner": {
-                    "remote-exec": [
-                      {
-                        "inline": [
-                          "bootstrap-cluster.sh ${join(\" \",\n      aws_instance.cluster[*].private_ip)}"
-                        ]
-                      }
-                    ]
-                  },
-                  "triggers": {
-                    "cluster_instance_ids": "${join(\",\", aws_instance.cluster[*].id)}"
-                  }
+                  "action": "rotate-password",
+                  "instance_id": "${cloudamqp_instance.instance.id}"
                 }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rotate-apikey
+              manifest: |-
+                {
+                  "action": "rotate-apikey",
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            action: |-
+                - (Required/ForceNew) The action to be invoked. Allowed actions
+                rotate-password, rotate-apikey.
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+        importStatements: []
+    cloudamqp_alarm:
+        subCategory: ""
+        description: Creates and manages alarms to trigger notifications.
+        name: cloudamqp_alarm
+        title: cloudamqp_alarm
+        examples:
+            - name: cpu_alarm
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "recipients": [
+                    "${cloudamqp_notification.recipient_01.id}"
+                  ],
+                  "reminder_interval": 600,
+                  "time_threshold": 600,
+                  "type": "cpu",
+                  "value_threshold": 95
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
               dependencies:
-                aws_instance.cluster: |-
+                cloudamqp_notification.recipient_01: |-
                     {
-                      "ami": "ami-0dcc1e21636832c5d",
-                      "count": 3,
-                      "instance_type": "m5.large"
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "name": "alarm",
+                      "type": "email",
+                      "value": "alarm@example.com"
+                    }
+            - name: memory_alarm
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "recipients": [
+                    "${cloudamqp_notification.recipient_01.id}"
+                  ],
+                  "reminder_interval": 600,
+                  "time_threshold": 600,
+                  "type": "memory",
+                  "value_threshold": 95
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_notification.recipient_01: |-
+                    {
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "name": "alarm",
+                      "type": "email",
+                      "value": "alarm@example.com"
+                    }
+            - name: notice
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "recipients": [
+                    "${cloudamqp_notification.recipient_01.id}"
+                  ],
+                  "type": "notice"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_notification.recipient_01: |-
+                    {
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "name": "alarm",
+                      "type": "email",
+                      "value": "alarm@example.com"
                     }
         argumentDocs:
-            id: (String) This is set to a random value at create time.
-            triggers: (Map of String) A map of arbitrary strings that, when changed, will force the null resource to be replaced, re-running any associated provisioners.
+            enabled: '- (Required) Enable or disable the alarm to trigger.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            message_type: '- (Optional) Message type (total, unacked, ready) used by queue alarm type.'
+            queue_regex: '- (Optional) Regex for which queue to check.'
+            recipients: |-
+                - (Optional) Identifier for recipient to be notified. Leave empty to notify
+                all recipients.
+            reminder_interval: |-
+                - (Optional) The reminder interval (in seconds) to resend the alarm if not
+                resolved. Set to 0 for no reminders. The Default is 0.
+            time_threshold: |-
+                - (Optional) The time interval (in seconds) the value_threshold should be
+                active before triggering an alarm.
+            type: '- (Required) The alarm type, see valid options below.'
+            value_calculation: |-
+                - (Optional) Disk value threshold calculation, fixed, percentage of disk
+                space remaining.
+            value_threshold: '- (Optional) The value to trigger the alarm for.'
+            vhost_regex: '- (Optional) Regex for which vhost to check'
+        importStatements: []
+    cloudamqp_custom_domain:
+        subCategory: ""
+        description: Configure and manage your custom domain
+        name: cloudamqp_custom_domain
+        title: cloudamqp_custom_domain
+        examples:
+            - name: settings
+              manifest: |-
+                {
+                  "hostname": "myname.mydomain",
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            hostname: '- (Required) Your custom domain name.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+        importStatements: []
+    cloudamqp_extra_disk_size:
+        subCategory: ""
+        description: Resize the disk with extra storage capacity.
+        name: cloudamqp_extra_disk_size
+        title: cloudamqp_extra_disk_size
+        examples:
+            - name: resize_disk
+              manifest: |-
+                {
+                  "extra_disk_size": 25,
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-2"
+                    }
+            - name: resize_disk
+              manifest: |-
+                {
+                  "extra_disk_size": 25,
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-2"
+                    }
+            - name: resize_disk
+              manifest: |-
+                {
+                  "extra_disk_size": 25,
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance",
+                      "plan": "penguin-1",
+                      "region": "google-compute-engine::us-central1"
+                    }
+            - name: resize_disk
+              manifest: |-
+                {
+                  "extra_disk_size": 25,
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance",
+                      "plan": "penguin-1",
+                      "region": "azure-arm::centralus"
+                    }
+        argumentDocs:
+            allow_downtime: |-
+                - (Optional) When resizing the disk, allow cluster downtime if necessary.
+                Default set to false.
+            extra_disk_size: |-
+                - (ForceNew/Required) Extra disk size in GB. Supported values: 0, 25, 50, 100,
+                250, 500, 1000, 2000
+            id: '- The identifier for this resource.'
+            instance_id: '- (ForceNew/Required) The CloudAMQP instance ID.'
+            nodes: '- An array of node information. Each nodes block consists of the fields documented below.'
+            nodes.additional_disk_size: '- Additional added disk size'
+            nodes.disk_size: '- Subscription plan disk size'
+            nodes.name: '- Name of the node.'
+            sleep: |-
+                - (Optional) Configurable sleep time in seconds between retries for resizing the
+                disk. Default set to 30 seconds.
+            timeout: |-
+                - (Optional) Configurable timeout time in seconds for resizing the disk. Default
+                set to 1800 seconds.
+        importStatements: []
+    cloudamqp_instance:
+        subCategory: ""
+        description: Creates and manages a Rabbit MQ instance within CloudAMQP.
+        name: cloudamqp_instance
+        title: cloudamqp_instance
+        examples:
+            - name: lemur_instance
+              manifest: |-
+                {
+                  "name": "cloudamqp-free-instance-01",
+                  "plan": "lemming",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "lavinmq"
+                  ]
+                }
+            - name: lemming_instance
+              manifest: |-
+                {
+                  "name": "cloudamqp-free-instance-02",
+                  "plan": "lemur",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "rabbitmq"
+                  ]
+                }
+            - name: penguin_instance
+              manifest: |-
+                {
+                  "name": "terraform-cloudamqp-instance-01",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "lavinmq"
+                  ]
+                }
+            - name: bunny_instance
+              manifest: |-
+                {
+                  "name": "terraform-cloudamqp-instance-02",
+                  "plan": "bunny-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "rabbitmq"
+                  ]
+                }
+            - name: instance
+              manifest: |-
+                {
+                  "name": "terraform-cloudamqp-instance",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ],
+                  "vpc_subnet": "10.56.72.0/24"
+                }
+            - name: instance_01
+              manifest: |-
+                {
+                  "name": "terraform-cloudamqp-instance-01",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ],
+                  "vpc_subnet": "10.56.72.0/24"
+                }
+            - name: instance_01
+              manifest: |-
+                {
+                  "keep_associated_vpc": true,
+                  "name": "terraform-cloudamqp-instance-01",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ],
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "\u003cvpc-name\u003e",
+                      "region": "amazon-web-services::us-east-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: instance_01
+              manifest: |-
+                {
+                  "keep_associated_vpc": true,
+                  "name": "terraform-cloudamqp-instance-01",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ],
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "\u003cvpc-name\u003e",
+                      "region": "amazon-web-services::us-east-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: instance_02
+              manifest: |-
+                {
+                  "keep_associated_vpc": true,
+                  "name": "terraform-cloudamqp-instance-02",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ],
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "\u003cvpc-name\u003e",
+                      "region": "amazon-web-services::us-east-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: instance
+              manifest: |-
+                {
+                  "name": "instance",
+                  "plan": "puffin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+            - name: instance
+              manifest: |-
+                {
+                  "name": "instance",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+            - name: instance
+              manifest: |-
+                {
+                  "name": "instance",
+                  "plan": "penguin-3",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+            - name: instance
+              manifest: |-
+                {
+                  "name": "instance",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+            - name: penguin_instance
+              manifest: |-
+                {
+                  "copy_settings": [
+                    {
+                      "settings": [
+                        "alarms",
+                        "definitions",
+                        "firewall",
+                        "metrics"
+                      ],
+                      "subscription_id": "${var.instance_id}"
+                    }
+                  ],
+                  "name": "terraform-cloudamqp-instance-01",
+                  "plan": "penguin-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "rmq_version": "2.2.0",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+              references:
+                copy_settings.subscription_id: var.instance_id
+            - name: bunny_instance
+              manifest: |-
+                {
+                  "copy_settings": [
+                    {
+                      "settings": [
+                        "alarms",
+                        "config",
+                        "definitions",
+                        "firewall",
+                        "logs",
+                        "metrics",
+                        "plugins"
+                      ],
+                      "subscription_id": "${var.instance_id}"
+                    }
+                  ],
+                  "name": "terraform-cloudamqp-instance-02",
+                  "plan": "bunny-1",
+                  "region": "amazon-web-services::us-west-1",
+                  "rmq_version": "3.12.2",
+                  "tags": [
+                    "terraform"
+                  ]
+                }
+              references:
+                copy_settings.subscription_id: var.instance_id
+        argumentDocs:
+            apikey: |-
+                - API key needed to communicate to CloudAMQP's second API. The second API is used
+                to manage alarms, integration and more, full description CloudAMQP API.
+            backend: '- Information if the CloudAMQP instance runs either RabbitMQ or LavinMQ.'
+            copy_settings: |-
+                - (Optional) Copy settings from one CloudAMQP instance to a new. Consists of
+                the block documented below.
+            copy_settings.settings: |-
+                - (Required) Array of one or more settings to be copied. Allowed values:
+                [alarms, config, definitions, firewall, logs, metrics, plugins]
+            copy_settings.subscription_id: |-
+                - (Required) Instance identifier of the CloudAMQP instance to copy the settings
+                from.
+            dedicated: '- Information if the CloudAMQP instance is shared or dedicated.'
+            host: '- The external hostname for the CloudAMQP instance.'
+            host_internal: '- The internal hostname for the CloudAMQP instance.'
+            id: |-
+                - The identifier (instance_id) for this resource, used as a reference by almost
+                all other resource and data sources
+            keep_associated_vpc: |-
+                - (Optional) Keep associated VPC when deleting instance. Default set to
+                false.
+            name: '- (Required) Name of the CloudAMQP instance.'
+            no_default_alarm: |-
+                - (Optional/Computed) Set to true to discard creating default alarms when
+                the instance is created. Can be left out, will then use default
+                value = false.
+            nodes: |-
+                - (Optional/Computed) Number of nodes, 1, 3 or 5 depending on plan used. Only needed for
+                legacy plans, will otherwise be computed.
+            plan: '- (Required) The subscription plan. See available plans.'
+            region: '- (Required) The region to host the instance in. See available regions.'
+            rmq_version: |-
+                - (Optional/Computed) The Rabbit MQ version. Can be left out, will then be set to
+                default value used by CloudAMQP API.
+            tags: |-
+                - (Optional) One or more tags for the CloudAMQP instance, makes it possible to
+                categories multiple instances in console view. Default there is no tags assigned.
+            url: |-
+                - The AMQP URL (uses the internal hostname if the instance was created with VPC).
+                Has the format: amqps://{username}:{password}@{hostname}/{vhost}
+            vhost: '- The virtual host used by Rabbit MQ.'
+            vpc_id: |-
+                - (Optional/Computed) The VPC ID. Use this to create your instance in an existing
+                VPC. See available example.
+            vpc_subnet: |-
+                - (Optional/Computed) Creates a dedicated VPC subnet, shouldn't overlap with other
+                VPC subnet, default subnet used 10.56.72.0/24.
+        importStatements: []
+    cloudamqp_integration_aws_eventbridge:
+        subCategory: ""
+        description: Creates and manages an AWS EventBridge for a CloudAMQP instance.
+        name: cloudamqp_integration_aws_eventbridge
+        title: cloudamqp_integration_aws_eventbridge
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "aws_account_id": "\u003cAWS-ACCOUNT-ID\u003e",
+                  "aws_region": "us-west-1",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "queue": "\u003cQUEUE-NAME\u003e",
+                  "vhost": "${cloudamqp_instance.instance.vhost}",
+                  "with_headers": true
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                vhost: cloudamqp_instance.instance.vhost
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Test instance",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "rmq_version": "3.11.5",
+                      "tags": [
+                        "aws"
+                      ]
+                    }
+        argumentDocs:
+            aws_account_id: |-
+                - (ForceNew/Required) The 12 digit AWS Account ID where you want the events to
+                be sent to.
+            aws_region: |-
+                - (ForceNew/Required) The AWS region where you the events to be sent to.
+                (e.g. us-west-1, us-west-2, ..., etc.)
+            id: '- The identifier for this resource.'
+            queue: '- (ForceNew/Required) A (durable) queue on your RabbitMQ instance.'
+            status: '- Always set to null, unless there is an error starting the EventBridge.'
+            vhost: '- (ForceNew/Required) The VHost the queue resides in.'
+            with_headers: |-
+                - (ForceNew/Required) Include message headers in the event data.
+                ({ "headers": { }, "body": { "your": "message" } })
+        importStatements: []
+    cloudamqp_integration_log:
+        subCategory: ""
+        description: Creates and manages third party log integration for a CloudAMQP instance.
+        name: cloudamqp_integration_log
+        title: cloudamqp_integration_log
+        examples:
+            - name: azure_monitor
+              manifest: |-
+                {
+                  "application_id": "${var.azm_application_id}",
+                  "application_secret": "${var.azm_application_secret}",
+                  "dce_uri": "${var.azm_dce_uri}",
+                  "dcr_id": "${var.azm_dcr_id}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "azure_monitor",
+                  "table": "${var.azm_table}",
+                  "tenant_id": "${var.azm_tentant_id}"
+                }
+              references:
+                application_id: var.azm_application_id
+                application_secret: var.azm_application_secret
+                dce_uri: var.azm_dce_uri
+                dcr_id: var.azm_dcr_id
+                instance_id: cloudamqp_instance.instance.id
+                table: var.azm_table
+                tenant_id: var.azm_tentant_id
+            - name: cloudwatch
+              manifest: |-
+                {
+                  "access_key_id": "${var.aws_access_key_id}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "cloudwatchlog",
+                  "region": "${var.aws_region}",
+                  "secret_access_key": "${var.aws_secret_access_key}"
+                }
+              references:
+                access_key_id: var.aws_access_key_id
+                instance_id: cloudamqp_instance.instance.id
+                region: var.aws_region
+                secret_access_key: var.aws_secret_access_key
+            - name: coralogix
+              manifest: |-
+                {
+                  "application": "${var.coralogix_application}",
+                  "endpoint": "${var.coralogix_endpoint}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "coralogix",
+                  "private_key": "${var.coralogix_send_data_key}",
+                  "subsystem": "${cloudamqp_instance.instance.host}"
+                }
+              references:
+                application: var.coralogix_application
+                endpoint: var.coralogix_endpoint
+                instance_id: cloudamqp_instance.instance.id
+                private_key: var.coralogix_send_data_key
+                subsystem: cloudamqp_instance.instance.host
+            - name: datadog
+              manifest: |-
+                {
+                  "api_key": "${var.datadog_api_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "datadog",
+                  "region": "${var.datadog_region}",
+                  "tags": "env=prod,region=us1,version=v1.0"
+                }
+              references:
+                api_key: var.datadog_api_key
+                instance_id: cloudamqp_instance.instance.id
+                region: var.datadog_region
+            - name: logentries
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "logentries",
+                  "token": "${var.logentries_token}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                token: var.logentries_token
+            - name: loggly
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "loggly",
+                  "token": "${var.loggly_token}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                token: var.loggly_token
+            - name: papertrail
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "papertrail",
+                  "url": "${var.papertrail_url}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                url: var.papertrail_url
+            - name: scalyr
+              manifest: |-
+                {
+                  "host": "${var.scalyr_host}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "scalyr",
+                  "token": "${var.scalyr_token}"
+                }
+              references:
+                host: var.scalyr_host
+                instance_id: cloudamqp_instance.instance.id
+                token: var.scalyr_token
+            - name: splunk
+              manifest: |-
+                {
+                  "host_port": "${var.splunk_host_port}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "splunk",
+                  "source_type": "generic_single_line",
+                  "token": "${var.splunk_token}"
+                }
+              references:
+                host_port: var.splunk_host_port
+                instance_id: cloudamqp_instance.instance.id
+                token: var.splunk_token
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${var.stackdriver_client_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${var.stackdriver_private_key}",
+                  "project_id": "${var.stackdriver_project_id}"
+                }
+              references:
+                client_email: var.stackdriver_client_email
+                instance_id: cloudamqp_instance.instance.id
+                private_key: var.stackdriver_private_key
+                project_id: var.stackdriver_project_id
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).client_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).private_key}",
+                  "project_id": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).project_id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+            - name: stackdriver
+              manifest: |-
+                {
+                  "credentials": "${google_service_account_key.service_account_key.private_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver"
+                }
+              references:
+                credentials: google_service_account_key.service_account_key.private_key
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).client_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).private_key}",
+                  "project_id": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).project_id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+        argumentDocs:
+            access_key_id: '- (Optional/Sensitive) AWS access key identifier.'
+            api_key: '- (Optional/Sensitive) The API key.'
+            application: '- (Optional) The application name for Coralogix.'
+            application_id: '- (Optional) The application identifier for Azure monitor.'
+            application_secret: '- (Optional/Sensitive) The application secret for Azure monitor.'
+            client_email: '- (Optional/Computed) The client email registered for the integration service.'
+            credentials: '- (Optional/Sensitive) Google Service Account private key credentials.'
+            dce_uri: '- (Optional) The data collection endpoint for Azure monitor.'
+            dcr_id: |-
+                - (Optional) ID of data collection rule that your DCE is linked to for Azure
+                Monitor.
+            endpoint: '- (Optional) The syslog destination to send the logs to for Coralogix.'
+            host: |-
+                - (Optional) The host for Scalyr integration. (app.scalyr.com,
+                app.eu.scalyr.com)
+            host_port: '- (Optional) Destination to send the logs.'
+            id: '- The identifier for this resource'
+            name: |-
+                - (Required) The name of the third party log integration. See
+                integration type reference
+            private_key: '- (Optional/Computed/Sensitive) The private access key.'
+            project_id: '- (Optional/Computed) The project identifier.'
+            region: '- (Optional) Region hosting the integration service.'
+            secret_access_key: '- (Optional/Sensitive) AWS secret access key.'
+            sourcetype: |-
+                - (Optional) Assign source type to the data exported, eg. generic_single_line.
+                (Splunk)
+            subsystem: '- (Optional) The subsystem name for Coralogix.'
+            table: '- (Optional) The table name for Azure monitor.'
+            tags: '- (Optional) Tags. e.g. env=prod,region=europe.'
+            tenant_id: '- (Optional) The tenant identifier for Azure monitor.'
+            token: '- (Optional/Sensitive) Token used for authentication.'
+            url: '- (Optional) Endpoint to log integration.'
+        importStatements: []
+    cloudamqp_integration_metric:
+        subCategory: ""
+        description: Creates and manages third party metrics integration for a CloudAMQP instance.
+        name: cloudamqp_integration_metric
+        title: cloudamqp_integration_metric
+        examples:
+            - name: cloudwatch
+              manifest: |-
+                {
+                  "access_key_id": "${var.aws_access_key_id}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "cloudwatch",
+                  "region": "${var.aws_region}",
+                  "secret_access_key": "${var_aws_secret_acccess_key}"
+                }
+              references:
+                access_key_id: var.aws_access_key_id
+                instance_id: cloudamqp_instance.instance.id
+                region: var.aws_region
+                secret_access_key: var_aws_secret_acccess_key
+            - name: cloudwatch_v2
+              manifest: |-
+                {
+                  "access_key_id": "${var.aws_access_key_id}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "cloudwatch_v2",
+                  "region": "${var.aws_region}",
+                  "secret_access_key": "${var_aws_secret_acccess_key}"
+                }
+              references:
+                access_key_id: var.aws_access_key_id
+                instance_id: cloudamqp_instance.instance.id
+                region: var.aws_region
+                secret_access_key: var_aws_secret_acccess_key
+            - name: cloudwatch
+              manifest: |-
+                {
+                  "iam_external_id": "${var.external_id}",
+                  "iam_role": "${var.aws_iam_role}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "cloudwatch",
+                  "region": "${var.aws_region}"
+                }
+              references:
+                iam_external_id: var.external_id
+                iam_role: var.aws_iam_role
+                instance_id: cloudamqp_instance.instance.id
+                region: var.aws_region
+            - name: cloudwatch_v2
+              manifest: |-
+                {
+                  "iam_external_id": "${var.external_id}",
+                  "iam_role": "${var.aws_iam_role}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "cloudwatch_v2",
+                  "region": "${var.aws_region}"
+                }
+              references:
+                iam_external_id: var.external_id
+                iam_role: var.aws_iam_role
+                instance_id: cloudamqp_instance.instance.id
+                region: var.aws_region
+            - name: datadog
+              manifest: |-
+                {
+                  "api_key": "${var.datadog_api_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "datadog",
+                  "region": "${var.datadog_region}",
+                  "tags": "env=prod,region=us1,version=v1.0"
+                }
+              references:
+                api_key: var.datadog_api_key
+                instance_id: cloudamqp_instance.instance.id
+                region: var.datadog_region
+            - name: datadog_v2
+              manifest: |-
+                {
+                  "api_key": "${var.datadog_api_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "datadog_v2",
+                  "region": "${var.datadog_region}",
+                  "tags": "env=prod,region=us1,version=v1.0"
+                }
+              references:
+                api_key: var.datadog_api_key
+                instance_id: cloudamqp_instance.instance.id
+                region: var.datadog_region
+            - name: librato
+              manifest: |-
+                {
+                  "api_key": "${var.librato_api_key}",
+                  "email": "${var.librato_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "librato"
+                }
+              references:
+                api_key: var.librato_api_key
+                email: var.librato_email
+                instance_id: cloudamqp_instance.instance.id
+            - name: newrelic
+              manifest: |-
+                {
+                  "api_key": "${var.newrelic_api_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "newrelic_v2",
+                  "region": "${var.newrelic_region}"
+                }
+              references:
+                api_key: var.newrelic_api_key
+                instance_id: cloudamqp_instance.instance.id
+                region: var.newrelic_region
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${var.stackriver_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${var.stackdriver_private_key}",
+                  "project_id": "${var.stackdriver_project_id}"
+                }
+              references:
+                client_email: var.stackriver_email
+                instance_id: cloudamqp_instance.instance.id
+                private_key: var.stackdriver_private_key
+                project_id: var.stackdriver_project_id
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).client_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).private_key}",
+                  "project_id": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).project_id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+            - name: stackdriver
+              manifest: |-
+                {
+                  "credentials": "${google_service_account_key.service_account_key.private_key}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver"
+                }
+              references:
+                credentials: google_service_account_key.service_account_key.private_key
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+            - name: stackdriver
+              manifest: |-
+                {
+                  "client_email": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).client_email}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "stackdriver",
+                  "private_key": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).private_key}",
+                  "project_id": "${jsondecode(base64decode(google_service_account_key.service_account_key.private_key)).project_id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                google_service_account.service_account: |-
+                    {
+                      "account_id": "\u003caccount_id\u003e",
+                      "description": "\u003cdescription\u003e",
+                      "display_name": "\u003cdisplay_name\u003e"
+                    }
+                google_service_account_key.service_account_key: |-
+                    {
+                      "service_account_id": "${google_service_account.service_account.name}"
+                    }
+        argumentDocs:
+            access_key_id: '- (Optional) AWS access key identifier.'
+            api_key: '- (Optional) The API key for the integration service.'
+            client_email: '- (Optional/Computed) The client email registered for the integration service.'
+            credentials: '- (Optional) Google Service Account private key credentials.'
+            email: '- (Optional) The email address registred for the integration service.'
+            iam_external_id: '- (Optional) External identifier that match the role you created.'
+            iam_role: '- (Optional) The ARN of the role to be assumed when publishing metrics.'
+            id: '- The identifier for this resource.'
+            include_ad_queues: '- (Optional) Include auto delete queues.'
+            name: |-
+                - (Required) The name of the third party log integration. See
+                Integration service reference
+            private_key: '- (Optional/Computed) The private access key.'
+            project_id: '- (Optional/Computed) The project identifier.'
+            queue_allowlist: |-
+                - (Optional) Allowlist queues using regular expression. Leave empty to include
+                all queues.
+            queue_whitelist: '- Deprecated Use queue_allowlist instead'
+            region: '- (Optional) Region hosting the integration service.'
+            secret_access_key: '- (Optional) AWS secret access key.'
+            tags: '- (Optional) Tags. e.g. env=prod,region=europe.'
+            vhost_allowlist: |-
+                - (Optional) Allowlist vhost using regular expression. Leave empty to include
+                all vhosts.
+            vhost_whitelist: '- Deprecated Use vhost_allowlist instead'
+        importStatements: []
+    cloudamqp_maintenance_window:
+        subCategory: ""
+        description: Update the preferred maintenance window.
+        name: cloudamqp_maintenance_window
+        title: cloudamqp_maintenance_window
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "preferred_day": "Monday",
+                  "preferred_time": "23:00"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: this
+              manifest: |-
+                {
+                  "automatic_updates": "on",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "preferred_day": "Monday",
+                  "preferred_time": "23:00"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: this
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "preferred_time": "23:00"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: this
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "preferred_day": "Monday"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            automatic_updates: |-
+                - (Optional/Computed) Allow scheduling of a maintenance for version update
+                once a new LavinMQ version been released.
+            id: '- The identifier for this resource (will be same as instance identifier).'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            preferred_day: '- (Optional) Preferred day of the week when to schedule maintenance.'
+            preferred_time: '- (Optional) Preferred time (UTC) of the day when to schedule maintenance.'
+        importStatements: []
+    cloudamqp_node_actions:
+        subCategory: ""
+        description: Invoke actions on a specific node (e.g. restart RabbitMQ).
+        name: cloudamqp_node_actions
+        title: cloudamqp_node_actions
+        examples:
+            - name: node_action
+              manifest: |-
+                {
+                  "action": "restart",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "\u003cnode name\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: restart_01
+              manifest: |-
+                {
+                  "action": "restart",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[0].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[0].name
+            - name: restart_02
+              manifest: |-
+                {
+                  "action": "restart",
+                  "depends_on": [
+                    "${cloudamqp_node_actions.restart_01}"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[1].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[1].name
+            - name: restart_03
+              manifest: |-
+                {
+                  "action": "restart",
+                  "depends_on": [
+                    "${cloudamqp_node_actions.restart_01}",
+                    "${cloudamqp_node_actions.restart_02}"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[2].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[2].name
+            - name: restart_01
+              manifest: |-
+                {
+                  "action": "restart",
+                  "depends_on": [
+                    "${cloudamqp_rabbitmq_configuration.rabbitmq_config}"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[0].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[0].name
+              dependencies:
+                cloudamqp_rabbitmq_configuration.rabbitmq_config: |-
+                    {
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "log_exchange_level": "info"
+                    }
+            - name: restart_02
+              manifest: |-
+                {
+                  "action": "restart",
+                  "depends_on": [
+                    "${cloudamqp_rabbitmq_configuration.rabbitmq_config}",
+                    "${cloudamqp_node_actions.restart_01}"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[1].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[1].name
+              dependencies:
+                cloudamqp_rabbitmq_configuration.rabbitmq_config: |-
+                    {
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "log_exchange_level": "info"
+                    }
+            - name: restart_03
+              manifest: |-
+                {
+                  "action": "restart",
+                  "depends_on": [
+                    "${cloudamqp_rabbitmq_configuration.rabbitmq_config}",
+                    "${cloudamqp_node_actions.restart_01}",
+                    "${cloudamqp_node_actions.restart_02}"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[2].name}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                node_name: data.cloudamqp_nodes.list_nodes.nodes[2].name
+              dependencies:
+                cloudamqp_rabbitmq_configuration.rabbitmq_config: |-
+                    {
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "log_exchange_level": "info"
+                    }
+        argumentDocs:
+            action: '- (Required) The action to invoke on the node.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            node_name: '- (Required) The node name, e.g green-guinea-pig-01.'
+            running: '- If the node is running.'
+        importStatements: []
+    cloudamqp_notification:
+        subCategory: ""
+        description: Creates and manages recipients to receive alarm notifications.
+        name: cloudamqp_notification
+        title: cloudamqp_notification
+        examples:
+            - name: email_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "alarm",
+                  "type": "email",
+                  "value": "alarm@example.com"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: opsgenie_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "OpsGenie",
+                  "responders": [
+                    {
+                      "id": "\u003cteam-uuid\u003e",
+                      "type": "team"
+                    },
+                    {
+                      "type": "user",
+                      "username": "\u003cusername\u003e"
+                    }
+                  ],
+                  "type": "opsgenie",
+                  "value": "\u003capi-key\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: pagerduty_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "PagerDuty",
+                  "options": {
+                    "dedupkey": "DEDUPKEY"
+                  },
+                  "type": "pagerduty",
+                  "value": "\u003cintegration-key\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: signl4_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "Signl4",
+                  "type": "signl4",
+                  "value": "\u003cteam-secret\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: teams_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "Teams",
+                  "type": "teams",
+                  "value": "\u003cteams-webhook-url\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: victorops_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "Victorops",
+                  "options": {
+                    "rk": "ROUTINGKEY"
+                  },
+                  "type": "victorops",
+                  "value": "\u003cintegration-key\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: slack_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "Slack webhook recipient",
+                  "type": "slack",
+                  "value": "\u003cslack-webhook-url\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: webhook_recipient
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "Webhook",
+                  "type": "webhook",
+                  "value": "\u003cwebhook-url\u003e"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            name: '- (Optional) Display name of the recipient.'
+            options: '- (Optional) Options argument (e.g. rk used for VictorOps routing key).'
+            responders: |-
+                - (Optional) An array of reponders (only for OpsGenie). Each responders block
+                consists of the field documented below.
+            responders.id: '- (Optional) Identifier in UUID format'
+            responders.name: '- (Optional) Name of the responder'
+            responders.type: '- (Required) Type of responder. [team, user, escalation, schedule]'
+            responders.username: '- (Optional) Username of the responder'
+            type: '- (Required) Type of the notification. See valid options below.'
+            value: '- (Required) Integration/API key or endpoint to send the notification.'
+        importStatements: []
+    cloudamqp_plugin:
+        subCategory: ""
+        description: Enable and disable Rabbit MQ plugin.
+        name: cloudamqp_plugin
+        title: cloudamqp_plugin
+        examples:
+            - name: rabbitmq_top
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_top"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_top
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_top"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_amqp1_0
+              manifest: |-
+                {
+                  "depends_on": [
+                    "${cloudamqp_plugin.rabbitmq_top}"
+                  ],
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_amqp1_0"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_top
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_top"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_amqp1_0
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_amqp1_0"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_top
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_top"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-cloudamqp-instance",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [
+                        "terraform"
+                      ]
+                    }
+            - name: rabbitmq_amqp1_0
+              manifest: |-
+                {
+                  "enabled": true,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "name": "rabbitmq_amqp1_0"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-cloudamqp-instance",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [
+                        "terraform"
+                      ]
+                    }
+        argumentDocs:
+            description: '- The description of the plugin.'
+            enabled: '- (Required) Enable or disable the plugins.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            name: '- (Required) The name of the Rabbit MQ plugin.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) for retries when requesting
+                information about plugins. Default set to 10 seconds.
+            timeout: |-
+                - (Optional) Configurable timeout time (seconds) for retries when requesting
+                information about plugins. Default set to 1800 seconds.
+            version: '- The version of the plugin.'
+        importStatements: []
+    cloudamqp_plugin_commiunity:
+        subCategory: ""
+        description: Install or uninstall community plugin.
+        name: cloudamqp_plugin_commiunity
+        title: cloudamqp_plugin_commiunity
+        argumentDocs:
+            description: '- The description of the plugin.'
+            enabled: '- (Required) Enable or disable the plugins.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            name: '- (Required) The name of the Rabbit MQ community plugin.'
+            require: '- Required version of RabbitMQ.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) for retries when requesting
+                information about community plugins. Default set to 10 seconds.
+            timeout: |-
+                - (Optional) - Configurable timeout time (seconds) for retries when requesting
+                information about community plugins. Default set to 1800 seconds.
+        importStatements: []
+    cloudamqp_privatelink_aws:
+        subCategory: ""
+        description: Enable PrivateLink for a CloudAMQP instance hosted in AWS.
+        name: cloudamqp_privatelink_aws
+        title: cloudamqp_privatelink_aws
+        examples:
+            - name: privatelink
+              manifest: |-
+                {
+                  "allowed_principals": [
+                    "arn:aws:iam::aws-account-id:user/user-name"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": []
+                    }
+            - name: privatelink
+              manifest: |-
+                {
+                  "allowed_principals": [
+                    "arn:aws:iam::aws-account-id:user/user-name"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "amazon-web-services::us-west-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: privatelink
+              manifest: |-
+                {
+                  "allowed_principals": [
+                    "arn:aws:iam::aws-account-id:user/user-name"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_privatelink_aws.privatelink}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "Custom PrivateLink setup",
+                          "ip": "${cloudamqp_vpc.vpc.subnet}",
+                          "ports": [],
+                          "services": [
+                            "AMQP",
+                            "AMQPS",
+                            "HTTPS",
+                            "STREAM",
+                            "STREAM_SSL"
+                          ]
+                        },
+                        {
+                          "description": "MGMT interface",
+                          "ip": "0.0.0.0/0",
+                          "ports": [],
+                          "services": [
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "amazon-web-services::us-west-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+        argumentDocs:
+            active_zones: '- Covering availability zones used when creating an Endpoint from other VPC.'
+            allowed_principals: '- (Required) Allowed principals to access the endpoint service.'
+            id: '- The identifier for this resource. Will be same as instance_id'
+            instance_id: '- (Required) The CloudAMQP instance identifier.'
+            service_name: '- Service name of the PrivateLink used when creating the endpoint from other VPC.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) when enable PrivateLink.
+                Default set to 10 seconds.
+            status: '- PrivateLink status [enable, pending, disable]'
+            timeout: |-
+                - (Optional) Configurable timeout time (seconds) when enable PrivateLink.
+                Default set to 1800 seconds.
+        importStatements: []
+    cloudamqp_privatelink_azure:
+        subCategory: ""
+        description: Enable PrivateLink for a CloudAMQP instance hosted in Azure.
+        name: cloudamqp_privatelink_azure
+        title: cloudamqp_privatelink_azure
+        examples:
+            - name: privatelink
+              manifest: |-
+                {
+                  "approved_subscriptions": [
+                    "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "azure-arm::westus",
+                      "tags": []
+                    }
+            - name: privatelink
+              manifest: |-
+                {
+                  "approved_subscriptions": [
+                    "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "azure-arm::westus",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "azure-arm::westus",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: privatelink
+              manifest: |-
+                {
+                  "approved_subscriptions": [
+                    "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "bunny-1",
+                      "region": "azure-arm::westus",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_privatelink_azure.privatelink}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "Custom PrivateLink setup",
+                          "ip": "${cloudamqp_vpc.vpc.subnet}",
+                          "ports": [],
+                          "services": [
+                            "AMQP",
+                            "AMQPS",
+                            "HTTPS",
+                            "STREAM",
+                            "STREAM_SSL"
+                          ]
+                        },
+                        {
+                          "description": "MGMT interface",
+                          "ip": "0.0.0.0/0",
+                          "ports": [],
+                          "services": [
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "azure-arm::westus",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+        argumentDocs:
+            approved_subscriptions: |-
+                - (Required) Approved subscriptions to access the endpoint service.
+                See format below.
+            id: '- The identifier for this resource. Will be same as instance_id'
+            instance_id: '- (Required) The CloudAMQP instance identifier.'
+            server_name: '- Name of the server having the PrivateLink enabled.'
+            service_name: '- Service name (alias) of the PrivateLink, needed when creating the endpoint.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) when enable PrivateLink.
+                Default set to 10 seconds.
+            status: '- PrivateLink status [enable, pending, disable]'
+            timeout: |-
+                - (Optional) Configurable timeout time (seconds) when enable PrivateLink.
+                Default set to 1800 seconds.
+        importStatements: []
+    cloudamqp_rabbitmq_configuration:
+        subCategory: ""
+        description: Update Rabbit MQ config
+        name: cloudamqp_rabbitmq_configuration
+        title: cloudamqp_rabbitmq_configuration
+        examples:
+            - name: rabbitmq_config
+              manifest: |-
+                {
+                  "channel_max": 0,
+                  "cluster_partition_handling": "autoheal",
+                  "connection_max": -1,
+                  "consumer_timeout": 7200000,
+                  "heartbeat": 120,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "log_exchange_level": "error",
+                  "max_message_size": 134217728,
+                  "queue_index_embed_msgs_below": 4096,
+                  "vm_memory_high_watermark": 0.81
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: rabbitmq_config
+              manifest: |-
+                {
+                  "channel_max": 0,
+                  "cluster_partition_handling": "autoheal",
+                  "connection_max": -1,
+                  "consumer_timeout": 7200000,
+                  "heartbeat": 120,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "log_exchange_level": "info",
+                  "max_message_size": 134217728,
+                  "queue_index_embed_msgs_below": 4096,
+                  "vm_memory_high_watermark": 0.81
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_node_actions.node_action: |-
+                    {
+                      "action": "restart",
+                      "depends_on": [
+                        "${cloudamqp_rabbitmq_configuration.rabbitmq_config}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "node_name": "${data.cloudamqp_nodes.list_nodes.nodes[0].name}"
+                    }
+            - name: rabbit_config
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "log_exchange_level": "info"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            channel_max: |-
+                - (Optional/Computed) Set the maximum permissible number of
+                channels per connection.
+            cluster_partition_handling: |-
+                - (Optional/Computed) Set how the cluster should handle network
+                partition.
+            connection_max: |-
+                - (Optional/Computed) Set the maximum permissible number of
+                connection.
+            consumer_timeout: |-
+                - (Optional/Computed) A consumer that has recevied a message and
+                does not acknowledge that message within the timeout in
+                milliseconds
+            heartbeat: |-
+                - (Optional/Computed) Set the server AMQP 0-9-1 heartbeat timeout
+                in seconds.
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            log_exchange_level: |-
+                - (Optional/Computed) Log level for the logger used for log
+                integrations and the CloudAMQP Console log view.
+            max_message_size: |-
+                - (Optional/Computed) The largest allowed message payload size in
+                bytes.
+            queue_index_embed_msgs_below: |-
+                - (Optional/Computed) Size in bytes below which to embed messages
+                in the queue index. 0 will turn off payload embedding in the
+                queue index.
+            sleep: |-
+                - (Optional) Configurable sleep time in seconds between retries
+                for RabbitMQ configuration. Default set to 60 seconds.
+            timeout: |-
+                - (Optional) - Configurable timeout time in seconds for RabbitMQ
+                configuration. Default set to 3600 seconds.
+            vm_memory_high_watermark: |-
+                - (Optional/Computed) When the server will enter memory based
+                flow-control as relative to the maximum available memory.
+        importStatements: []
+    cloudamqp_security_firewall:
+        subCategory: ""
+        description: Configure and manage firewall rules
+        name: cloudamqp_security_firewall
+        title: cloudamqp_security_firewall
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "rules": [
+                    {
+                      "ip": "192.168.0.0/24",
+                      "ports": [
+                        4567,
+                        4568
+                      ],
+                      "services": [
+                        "AMQP",
+                        "AMQPS",
+                        "HTTPS"
+                      ]
+                    },
+                    {
+                      "ip": "10.56.72.0/24",
+                      "ports": [],
+                      "services": [
+                        "AMQP",
+                        "AMQPS",
+                        "HTTPS"
+                      ]
+                    },
+                    {
+                      "ip": "192.168.1.10/32",
+                      "ports": [],
+                      "services": [
+                        "AMQP",
+                        "AMQPS",
+                        "HTTPS"
+                      ]
+                    }
+                  ]
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: this
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "rules": [
+                    {
+                      "description": "MGMT interface",
+                      "ip": "0.0.0.0/0",
+                      "ports": [],
+                      "services": [
+                        "HTTPS"
+                      ]
+                    },
+                    {
+                      "description": "VPC subnet",
+                      "ip": "10.56.72.0/24",
+                      "ports": [],
+                      "services": [
+                        "AMQP",
+                        "AMQPS",
+                        "HTTPS"
+                      ]
+                    }
+                  ]
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-cloudamqp-instance",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [
+                        "terraform"
+                      ]
+                    }
+            - name: firewall_settings
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "rules": [
+                    {
+                      "ip": "192.168.0.0/24",
+                      "ports": [
+                        5671
+                      ],
+                      "services": []
+                    }
+                  ]
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: firewall_settings
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "rules": [
+                    {
+                      "ip": "192.168.0.0/24",
+                      "ports": [],
+                      "services": [
+                        "AMQPS"
+                      ]
+                    }
+                  ]
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            rules: |-
+                - (Required) An array of rules, minimum of 1 needs to be configured. Each rules
+                block consists of the field documented below.
+            rules.description: '- (Optional) Description name of the rule. e.g. Default.'
+            rules.ip: '- (Required) CIDR address: IP address with CIDR notation (e.g. 10.56.72.0/24)'
+            rules.ports: '- (Optional) Custom ports to be opened'
+            rules.services: '- (Required) Pre-defined service ports, see table below'
+            sleep: |-
+                - (Optional) Configurable sleep time in seconds between retries for firewall
+                configuration. Default set to 30 seconds.
+            timeout: |-
+                - (Optional) Configurable timeout time in seconds for firewall configuration.
+                Default set to 1800 seconds.
+        importStatements: []
+    cloudamqp_upgrade_lavinmq:
+        subCategory: ""
+        description: Invoke upgrade for LavinMQ.
+        name: cloudamqp_upgrade_lavinmq
+        title: cloudamqp_upgrade_lavinmq
+        examples:
+            - name: upgrade
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "new_version": "1.3.1"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "lavinmq-version-upgrade-test",
+                      "plan": "lynx-1",
+                      "region": "amazon-web-services::us-west-1"
+                    }
+        argumentDocs:
+            instance_id: '- (Required) The CloudAMQP instance identifier'
+            new_version: '- (Optional/ForceNew) The new version to upgrade to'
+        importStatements: []
+    cloudamqp_upgrade_rabbitmq:
+        subCategory: ""
+        description: Invoke upgrade to latest possible upgradable versions for RabbitMQ and Erlang.
+        name: cloudamqp_upgrade_rabbitmq
+        title: cloudamqp_upgrade_rabbitmq
+        examples:
+            - name: upgrade
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "new_version": "3.13.2"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "rabbitmq-version-upgrade-test",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1"
+                    }
+            - name: upgrade
+              manifest: |-
+                {
+                  "current_version": "${cloudamqp_instance.instance.rmq_version}",
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "new_version": "${data.cloudamqp_upgradable_versions.upgradable_versions.new_rabbitmq_version}"
+                }
+              references:
+                current_version: cloudamqp_instance.instance.rmq_version
+                instance_id: cloudamqp_instance.instance.id
+                new_version: data.cloudamqp_upgradable_versions.upgradable_versions.new_rabbitmq_version
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "rabbitmq-version-upgrade-test",
+                      "plan": "bunny-1",
+                      "region": "amazon-web-services::us-west-1"
+                    }
+            - name: upgrade
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: upgrade
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+        argumentDocs:
+            current_version: |-
+                - (Optional) Helper argument to change upgrade behaviour to latest possible
+                version
+            instance_id: '- (Required) The CloudAMQP instance identifier'
+            new_version: '- (Optional/ForceNew) The new version to upgrade to'
+        importStatements: []
+    cloudamqp_vpc:
+        subCategory: ""
+        description: Managed VPC resource.
+        name: cloudamqp_vpc
+        title: cloudamqp_vpc
+        examples:
+            - name: vpc
+              manifest: |-
+                {
+                  "name": "\u003cVPC name\u003e",
+                  "region": "amazon-web-services::us-east-1",
+                  "subnet": "10.56.72.0/24",
+                  "tags": []
+                }
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "\u003cInstance name\u003e",
+                      "nodes": 1,
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-east-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamq_vpc.vpc.id}"
+                    }
+        argumentDocs:
+            id: '- The identifier for this resource.'
+            name: '- (Required) The name of the VPC.'
+            region: '- (Required) The hosted region for the managed standalone VPC'
+            subnet: '- (Required) The VPC subnet'
+            tags: '- (Optional) Tag the VPC with optional tags'
+            vpc_name: '- VPC name given when hosted at the cloud provider'
+        importStatements: []
+    cloudamqp_vpc_connect:
+        subCategory: ""
+        description: Enable VPC connect (Privatelink or Private Service Connect) for a CloudAMQP instance hosted in AWS, Azure or GCP.
+        name: cloudamqp_vpc_connect
+        title: cloudamqp_vpc_connect
+        examples:
+            - name: vpc_connect
+              manifest: |-
+                {
+                  "allowed_principals": [
+                    "arn:aws:iam::aws-account-id:user/user-name"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "region": "${cloudamqp_instance.instance.region}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                region: cloudamqp_instance.instance.region
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "amazon-web-services::us-west-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: vpc_connect
+              manifest: |-
+                {
+                  "approved_subscriptions": [
+                    "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "region": "${cloudamqp_instance.instance.region}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                region: cloudamqp_instance.instance.region
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "penguin-1",
+                      "region": "azure-arm::westus",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "azure-arm::westus",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: vpc_connect
+              manifest: |-
+                {
+                  "allowed_projects": [
+                    "some-project-123456"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "region": "${cloudamqp_instance.instance.region}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                region: cloudamqp_instance.instance.region
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "penguin-1",
+                      "region": "google-compute-engine::us-west1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "google-compute-engine::us-west1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: vpc_connect
+              manifest: |-
+                {
+                  "allowed_principals": [
+                    "arn:aws:iam::aws-account-id:user/user-name"
+                  ],
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "Instance 01",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-west-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_connect.vpc_connect}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "Custom PrivateLink setup",
+                          "ip": "${cloudamqp_vpc.vpc.subnet}",
+                          "ports": [],
+                          "services": [
+                            "AMQP",
+                            "AMQPS",
+                            "HTTPS"
+                          ]
+                        },
+                        {
+                          "description": "MGMT interface",
+                          "ip": "0.0.0.0/0",
+                          "ports": [],
+                          "services": [
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "Standalone VPC",
+                      "region": "amazon-web-services::us-west-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+        argumentDocs:
+            active_zones: '- Covering availability zones used when creating an endpoint from other VPC. (AWS)'
+            allowed_principals: '- (Optional) List of allowed prinicpals used by AWS, see below table.'
+            allowed_projects: '- (Optional) List of allowed projects used by GCP, see below table.'
+            approved_subscriptions: |-
+                - (Optional) List of approved subscriptions used by Azure, see below
+                table.
+            id: '- The identifier for this resource. Will be same as instance_id'
+            instance_id: '- (Required) The CloudAMQP instance identifier.'
+            region: '- (Required) The region where the CloudAMQP instance is hosted.'
+            service_name: '- Service name (alias for Azure, see example above) of the PrivateLink.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) when enable Private
+                Service Connect. Default set to 10 seconds.
+            status: '- Private Service Connect status [enable, pending, disable]'
+            timeout: |-
+                - (Optional) Configurable timeout time (seconds) when enable Private
+                Service Connect. Default set to 1800 seconds.
+        importStatements: []
+    cloudamqp_vpc_gcp_peering:
+        subCategory: ""
+        description: Create VPC peering configuration to another VPC network hosted in GCP
+        name: cloudamqp_vpc_gcp_peering
+        title: cloudamqp_vpc_gcp_peering
+        examples:
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "peer_network_uri": "https://www.googleapis.com/compute/v1/projects/PROJECT-NAME/global/networks/VPC-NETWORK-NAME"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-vpc-peering",
+                      "plan": "penguin-1",
+                      "region": "google-compute-engine::europe-north1",
+                      "tags": [
+                        "terraform"
+                      ],
+                      "vpc_subnet": "10.40.72.0/24"
+                    }
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "peer_network_uri": "https://www.googleapis.com/compute/v1/projects/PROJECT-NAME/global/networks/VPC-NETWORK-NAME",
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-vpc-peering",
+                      "plan": "penguin-1",
+                      "region": "google-compute-engine::europe-north1",
+                      "tags": [
+                        "terraform"
+                      ],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "\u003cVPC name\u003e",
+                      "region": "google-compute-engine::europe-north1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": []
+                    }
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "peer_network_uri": "https://www.googleapis.com/compute/v1/projects/ROJECT-NAME/global/networks/VPC-NETWORK-NAME",
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "peer_network_uri": "https://www.googleapis.com/compute/v1/projects/PROJECT-NAME/global/networks/VPC-NETWORK-NAME",
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}",
+                  "wait_on_peering_status": true
+                }
+              references:
+                vpc_id: cloudamqp_vpc.vpc.id
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "peer_network_uri": "${var.peer_network_uri}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                peer_network_uri: var.peer_network_uri
+              dependencies:
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_gcp_peering.vpc_peering_request}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "VPC peering for \u003cNETWORK\u003e",
+                          "ip": "${var.peer_subnet}",
+                          "ports": [
+                            15672,
+                            5552,
+                            5551
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS"
+                          ]
+                        },
+                        {
+                          "ip": "192.168.0.0/24",
+                          "ports": [
+                            4567,
+                            4568
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS",
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+            - name: vpc_peering_request
+              manifest: |-
+                {
+                  "peer_network_uri": "${var.peer_network_uri}",
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                peer_network_uri: var.peer_network_uri
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_gcp_peering.vpc_peering_request}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "VPC peering for \u003cNETWORK\u003e",
+                          "ip": "${var.peer_subnet}",
+                          "ports": [
+                            15672,
+                            5552,
+                            5551
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS"
+                          ]
+                        },
+                        {
+                          "description": "MGMT interface",
+                          "ip": "0.0.0.0/0",
+                          "ports": [],
+                          "services": [
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+        argumentDocs:
+            auto_create_routes: '- VPC peering auto created routes'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Optional) The CloudAMQP instance identifier.'
+            peer_network_uri: |-
+                - (Required) Network URI of the VPC network to which you will peer with.
+                See examples above for the format.
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) between retries when
+                requesting or reading peering. Default set to 10 seconds.
+            state: '- VPC peering state'
+            state_details: '- VPC peering state details'
+            timeout: |-
+                - (Optional) Configurable timeout time (seconds) before retries times
+                out. Default set to 1800 seconds.
+            vpc_id: '- (Optional) The managed VPC identifier.'
+            wait_on_peering_status: |-
+                - (Optional) Makes the resource wait until the peering is connected.
+                Default set to false.
+        importStatements: []
+    cloudamqp_vpc_peering:
+        subCategory: ""
+        description: Accepting VPC peering request from an AWS accepter.
+        name: cloudamqp_vpc_peering
+        title: cloudamqp_vpc_peering
+        examples:
+            - name: vpc_accept_peering
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "peering_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                peering_id: aws_vpc_peering_connection.aws_vpc_peering.id
+              dependencies:
+                aws_route.accepter_route: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_peering.vpc_accept_peering}"
+                      ],
+                      "destination_cidr_block": "${cloudamqp_instance.instance.vpc_subnet}",
+                      "provider": "${aws}",
+                      "route_table_id": "${data.aws_route_table.route_table.route_table_id}",
+                      "vpc_peering_connection_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}"
+                    }
+                aws_vpc_peering_connection.aws_vpc_peering: |-
+                    {
+                      "peer_owner_id": "${data.cloudamqp_vpc_info.vpc_info.owner_id}",
+                      "peer_vpc_id": "${data.cloudamqp_vpc_info.vpc_info.id}",
+                      "provider": "${aws}",
+                      "tags": {
+                        "Name": "${var.aws_peering_name}"
+                      },
+                      "vpc_id": "${data.aws_subnet.subnet.vpc_id}"
+                    }
+                cloudamqp_instance.instance: |-
+                    {
+                      "name": "terraform-vpc-accepter",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-east-1",
+                      "tags": [
+                        "terraform"
+                      ],
+                      "vpc_subnet": "10.40.72.0/24"
+                    }
+            - name: vpc_accept_peering
+              manifest: |-
+                {
+                  "peering_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}",
+                  "sleep": 30,
+                  "timeout": 600,
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                peering_id: aws_vpc_peering_connection.aws_vpc_peering.id
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                aws_route.accepter_route: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_peering.vpc_accept_peering}"
+                      ],
+                      "destination_cidr_block": "${cloudamqp_instance.instance.vpc_subnet}",
+                      "provider": "${aws}",
+                      "route_table_id": "${data.aws_route_table.route_table.route_table_id}",
+                      "vpc_peering_connection_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}"
+                    }
+                aws_vpc_peering_connection.aws_vpc_peering: |-
+                    {
+                      "peer_owner_id": "${data.cloudamqp_vpc_info.vpc_info.owner_id}",
+                      "peer_vpc_id": "${data.cloudamqp_vpc_info.vpc_info.id}",
+                      "provider": "${aws}",
+                      "tags": {
+                        "Name": "${var.aws_peering_name}"
+                      },
+                      "vpc_id": "${data.aws_subnet.subnet.vpc_id}"
+                    }
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "terraform-vpc-accepter",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-east-1",
+                      "tags": [
+                        "terraform"
+                      ],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "\u003cVPC name\u003e",
+                      "region": "amazon-web-services::us-east-1",
+                      "subnet": "10.56.72.0/24",
+                      "tags": [
+                        "terraform"
+                      ]
+                    }
+            - name: vpc_accept_peering
+              manifest: |-
+                {
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "peering_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                peering_id: aws_vpc_peering_connection.aws_vpc_peering.id
+              dependencies:
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_peering.vpc_accept_peering}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "VPC peering for \u003cNETWORK\u003e",
+                          "ip": "${data.aws_instance.aws_instance.subnet_id}",
+                          "ports": [
+                            15672,
+                            5552,
+                            5551
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS"
+                          ]
+                        },
+                        {
+                          "ip": "192.168.0.0/24",
+                          "ports": [
+                            4567,
+                            4568
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS",
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+            - name: vpc_accept_peering
+              manifest: |-
+                {
+                  "peering_id": "${aws_vpc_peering_connection.aws_vpc_peering.id}",
+                  "sleep": 30,
+                  "timeout": 600,
+                  "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                }
+              references:
+                peering_id: aws_vpc_peering_connection.aws_vpc_peering.id
+                vpc_id: cloudamqp_vpc.vpc.id
+              dependencies:
+                cloudamqp_security_firewall.firewall_settings: |-
+                    {
+                      "depends_on": [
+                        "${cloudamqp_vpc_peering.vpc_accept_peering}"
+                      ],
+                      "instance_id": "${cloudamqp_instance.instance.id}",
+                      "rules": [
+                        {
+                          "description": "VPC peering for \u003cNETWORK\u003e",
+                          "ip": "${data.aws_vpc.requester_vpc.cidr_block}",
+                          "ports": [
+                            15672,
+                            5552,
+                            5551
+                          ],
+                          "services": [
+                            "AMQP",
+                            "AMQPS"
+                          ]
+                        },
+                        {
+                          "description": "MGMT interface",
+                          "ip": "0.0.0.0/0",
+                          "ports": [],
+                          "services": [
+                            "HTTPS"
+                          ]
+                        }
+                      ]
+                    }
+        argumentDocs:
+            id: '- The identifier for this resource.'
+            instance_id: '- (Optional) The CloudAMQP instance identifier.'
+            peering_id: '- (Required) Peering identifier created by AW peering request.'
+            sleep: |-
+                - (Optional) Configurable sleep time (seconds) between retries for accepting or
+                removing peering. Default set to 60 seconds.
+            status: '- VPC peering status'
+            timeout: |-
+                - (Optional) - Configurable timeout time (seconds) for accepting or removing
+                peering. Default set to 3600 seconds.
+            vpc_id: '- (Optional) The managed VPC identifier.'
+        importStatements: []
+    cloudamqp_webhook:
+        subCategory: ""
+        description: Add, update or remove a webhook for a vhost and queue
+        name: cloudamqp_webhook
+        title: cloudamqp_webhook
+        examples:
+            - name: webhook_queue
+              manifest: |-
+                {
+                  "concurrency": 5,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "queue": "webhook-queue",
+                  "vhost": "${cloudamqp_instance.instance.vhost}",
+                  "webhook_uri": "https://example.com/webhook?key=secret"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                vhost: cloudamqp_instance.instance.vhost
+            - name: webhook_queue
+              manifest: |-
+                {
+                  "concurrency": 5,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "queue": "webhook-queue",
+                  "retry_interval": 5,
+                  "vhost": "${cloudamqp_instance.instance.vhost}",
+                  "webhook_uri": "https://example.com/webhook?key=secret"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                vhost: cloudamqp_instance.instance.vhost
+            - name: webhook_queue
+              manifest: |-
+                {
+                  "concurrency": 5,
+                  "instance_id": "${cloudamqp_instance.instance.id}",
+                  "queue": "webhook-queue",
+                  "retry_interval": 5,
+                  "vhost": "${cloudamqp_instance.instance.vhost}",
+                  "webhook_uri": "https://example.com/webhook?key=secret"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+                vhost: cloudamqp_instance.instance.vhost
+        argumentDocs:
+            concurrency: '- (Required) Max simultaneous requests to the endpoint.'
+            id: '- The identifier for this resource.'
+            instance_id: '- (Required) The CloudAMQP instance ID.'
+            queue: '- (Required) A (durable) queue on your RabbitMQ instance.'
+            retry_interval: '- (Required/ForceNew) How often we retry if your endpoint fails (in seconds).'
+            vhost: '- (Required) The vhost the queue resides in.'
+            webhook_uri: |-
+                - (Required) A POST request will be made for each message in the queue to this
+                endpoint.
         importStatements: []
