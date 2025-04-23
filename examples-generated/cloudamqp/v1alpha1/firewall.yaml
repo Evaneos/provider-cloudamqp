@@ -1,0 +1,34 @@
+apiVersion: cloudamqp.evaneos.com/v1alpha1
+kind: Firewall
+metadata:
+  annotations:
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/firewall
+  labels:
+    testing.upbound.io/example-name: this
+  name: this
+spec:
+  forProvider:
+    instanceIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: instance
+    rules:
+    - ip: 192.168.0.0/24
+      ports:
+      - 4567
+      - 4568
+      services:
+      - AMQP
+      - AMQPS
+      - HTTPS
+    - ip: 10.56.72.0/24
+      ports: []
+      services:
+      - AMQP
+      - AMQPS
+      - HTTPS
+    - ip: 192.168.1.10/32
+      ports: []
+      services:
+      - AMQP
+      - AMQPS
+      - HTTPS

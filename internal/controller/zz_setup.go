@@ -10,6 +10,7 @@ import (
 	"github.com/crossplane/upjet/pkg/controller"
 
 	community "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/community"
+	firewall "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/firewall"
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/instance"
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/maintenancewindow"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/plugin"
@@ -23,6 +24,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		community.Setup,
+		firewall.Setup,
 		instance.Setup,
 		maintenancewindow.Setup,
 		plugin.Setup,

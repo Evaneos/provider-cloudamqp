@@ -16,6 +16,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"cloudamqp_maintenance_window": config.IdentifierFromProvider,
 	"cloudamqp_plugin":             config.IdentifierFromProvider,
 	"cloudamqp_plugin_community":   config.IdentifierFromProvider,
+	"cloudamqp_security_firewall":  config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

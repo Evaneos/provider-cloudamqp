@@ -10,6 +10,9 @@ package v1alpha1
 func (tr *Community) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *Firewall) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *Instance) Hub() {}
 
 // Hub marks this type as a conversion hub.
