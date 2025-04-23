@@ -9,18 +9,18 @@ import (
 )
 
 const (
-	ErrFmtNoAttribute    = "Attribute %s not found"
-	ErrFmtUnexpectedType = "Attribute %s is of an unexpected type"
+	errFmtNoAttribute    = "Attribute %s not found"
+	errFmtUnexpectedType = "Attribute %s is of an unexpected type"
 )
 
 func getNameFromFullyQualifiedID(tfstate map[string]any) (string, error) {
 	id, ok := tfstate["id"]
 	if !ok {
-		return "", fmt.Errorf(ErrFmtNoAttribute, "id")
+		return "", fmt.Errorf(errFmtNoAttribute, "id")
 	}
 	idStr, ok := id.(string)
 	if !ok {
-		return "", fmt.Errorf(ErrFmtUnexpectedType, "id")
+		return "", fmt.Errorf(errFmtUnexpectedType, "id")
 	}
 	words := strings.Split(idStr, ",")
 	return words[len(words)-1], nil
@@ -32,7 +32,7 @@ func getFullyQualifiedIDfunc(ctx context.Context, externalName string, parameter
 	if !vpcok {
 		id, instanceok := parameters["instance_id"]
 		if !instanceok {
-			return "", fmt.Errorf(ErrFmtNoAttribute, "vpc_id")
+			return "", fmt.Errorf(errFmtNoAttribute, "vpc_id")
 		}
 
 		return fmt.Sprintf("instance,%s,%s", id, externalName), nil
