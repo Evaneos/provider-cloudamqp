@@ -10,6 +10,7 @@ import (
 	"github.com/crossplane/upjet/pkg/controller"
 
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/instance"
+	peering "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/peering"
 	vpc "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/vpc"
 	providerconfig "github.com/evaneos/provider-cloudamqp/internal/controller/providerconfig"
 )
@@ -19,6 +20,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		instance.Setup,
+		peering.Setup,
 		vpc.Setup,
 		providerconfig.Setup,
 	} {
