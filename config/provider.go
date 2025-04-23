@@ -11,6 +11,10 @@ import (
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
 	"github.com/evaneos/provider-cloudamqp/config/instance"
+	"github.com/evaneos/provider-cloudamqp/config/maintenance"
+	"github.com/evaneos/provider-cloudamqp/config/plugin"
+	"github.com/evaneos/provider-cloudamqp/config/security"
+	"github.com/evaneos/provider-cloudamqp/config/vpc"
 )
 
 const (
@@ -37,6 +41,10 @@ func GetProvider() *ujconfig.Provider {
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
 		instance.Configure,
+		vpc.Configure,
+		maintenance.Configure,
+		plugin.Configure,
+		security.Configure,
 	} {
 		configure(pc)
 	}

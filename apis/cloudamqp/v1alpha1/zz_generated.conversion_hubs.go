@@ -7,4 +7,25 @@
 package v1alpha1
 
 // Hub marks this type as a conversion hub.
+func (tr *Community) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *Firewall) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *Instance) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *MaintenanceWindow) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *Plugin) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VPC) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VpcGCPPeering) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VpcPeering) Hub() {}

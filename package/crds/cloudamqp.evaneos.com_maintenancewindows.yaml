@@ -4,7 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: instances.cloudamqp.evaneos.com
+  name: maintenancewindows.cloudamqp.evaneos.com
 spec:
   group: cloudamqp.evaneos.com
   names:
@@ -12,10 +12,10 @@ spec:
     - crossplane
     - managed
     - cloudamqp
-    kind: Instance
-    listKind: InstanceList
-    plural: instances
-    singular: instance
+    kind: MaintenanceWindow
+    listKind: MaintenanceWindowList
+    plural: maintenancewindows
+    singular: maintenancewindow
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Instance is the Schema for the Instances API. Creates and manages
-          a Rabbit MQ instance within CloudAMQP.
+        description: MaintenanceWindow is the Schema for the MaintenanceWindows API.
+          Update the preferred maintenance window.
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: InstanceSpec defines the desired state of Instance
+            description: MaintenanceWindowSpec defines the desired state of MaintenanceWindow
             properties:
               deletionPolicy:
                 default: Delete
@@ -73,80 +73,20 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  copySettings:
+                  automaticUpdates:
                     description: |-
-                      Copy settings from one CloudAMQP instance to a new. Consists of
-                      the block documented below.
-                    items:
-                      properties:
-                        settings:
-                          description: |-
-                            Array of one or more settings to be copied. Allowed values:
-                            [alarms, config, definitions, firewall, logs, metrics, plugins]
-                            Settings to be copied. [alarms, config, definitions, firewall, logs, metrics, plugins]
-                          items:
-                            type: string
-                          type: array
-                        subscriptionId:
-                          description: |-
-                            Instance identifier of the CloudAMQP instance to copy the settings
-                            from.
-                            Instance identifier of the CloudAMQP instance to copy settings from
-                          type: string
-                      type: object
-                    type: array
-                  keepAssociatedVpc:
-                    description: |-
-                      Keep associated VPC when deleting instance. Default set to
-                      false.
-                      Keep associated VPC when deleting instance
-                    type: boolean
-                  name:
-                    description: |-
-                      Name of the CloudAMQP instance.
-                      Name of the instance
+                      Allow scheduling of a maintenance for version update
+                      once a new LavinMQ version been released.
+                      Enable automatic updates
                     type: string
-                  noDefaultAlarms:
-                    description: Set to true to not create default alarms
-                    type: boolean
-                  nodes:
+                  instanceId:
                     description: |-
-                      Number of nodes, 1, 3 or 5 depending on plan used. Only needed for
-                      legacy plans, will otherwise be computed.
-                      Number of nodes in cluster (plan must support it)
+                      The CloudAMQP instance ID.
+                      Instance identifier
                     type: number
-                  plan:
-                    description: |-
-                      The subscription plan. See available plans.
-                      Name of the plan, see documentation for valid plans
-                    type: string
-                  region:
-                    description: |-
-                      The region to host the instance in. See available regions.
-                      Name of the region you want to create your instance in
-                    type: string
-                  rmqVersion:
-                    description: |-
-                      The Rabbit MQ version. Can be left out, will then be set to
-                      default value used by CloudAMQP API.
-                      RabbitMQ version
-                    type: string
-                  tags:
-                    description: |-
-                      One or more tags for the CloudAMQP instance, makes it possible to
-                      categories multiple instances in console view. Default there is no tags assigned.
-                      Tag the instances with optional tags
-                    items:
-                      type: string
-                    type: array
-                  vpcId:
-                    description: |-
-                      The VPC ID. Use this to create your instance in an existing
-                      VPC. See available example.
-                      The ID of the VPC to create your instance in
-                    type: number
-                  vpcIdRef:
-                    description: Reference to a VPC in cloudamqp to populate vpcId.
+                  instanceIdRef:
+                    description: Reference to a Instance in cloudamqp to populate
+                      instanceId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -179,8 +119,9 @@ spec:
                     required:
                     - name
                     type: object
-                  vpcIdSelector:
-                    description: Selector for a VPC in cloudamqp to populate vpcId.
+                  instanceIdSelector:
+                    description: Selector for a Instance in cloudamqp to populate
+                      instanceId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -219,11 +160,15 @@ spec:
                             type: string
                         type: object
                     type: object
-                  vpcSubnet:
+                  preferredDay:
                     description: |-
-                      Creates a dedicated VPC subnet, shouldn't overlap with other
-                      VPC subnet, default subnet used 10.56.72.0/24.
-                      Dedicated VPC subnet, shouldn't overlap with your current VPC's subnet
+                      Preferred day of the week when to schedule maintenance.
+                      Preferred day of the week when to run maintenance
+                    type: string
+                  preferredTime:
+                    description: |-
+                      Preferred time (UTC) of the day when to schedule maintenance.
+                      Preferred time (UTC) the day when to run maintenance
                     type: string
                 type: object
               initProvider:
@@ -239,80 +184,20 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  copySettings:
+                  automaticUpdates:
                     description: |-
-                      Copy settings from one CloudAMQP instance to a new. Consists of
-                      the block documented below.
-                    items:
-                      properties:
-                        settings:
-                          description: |-
-                            Array of one or more settings to be copied. Allowed values:
-                            [alarms, config, definitions, firewall, logs, metrics, plugins]
-                            Settings to be copied. [alarms, config, definitions, firewall, logs, metrics, plugins]
-                          items:
-                            type: string
-                          type: array
-                        subscriptionId:
-                          description: |-
-                            Instance identifier of the CloudAMQP instance to copy the settings
-                            from.
-                            Instance identifier of the CloudAMQP instance to copy settings from
-                          type: string
-                      type: object
-                    type: array
-                  keepAssociatedVpc:
-                    description: |-
-                      Keep associated VPC when deleting instance. Default set to
-                      false.
-                      Keep associated VPC when deleting instance
-                    type: boolean
-                  name:
-                    description: |-
-                      Name of the CloudAMQP instance.
-                      Name of the instance
+                      Allow scheduling of a maintenance for version update
+                      once a new LavinMQ version been released.
+                      Enable automatic updates
                     type: string
-                  noDefaultAlarms:
-                    description: Set to true to not create default alarms
-                    type: boolean
-                  nodes:
+                  instanceId:
                     description: |-
-                      Number of nodes, 1, 3 or 5 depending on plan used. Only needed for
-                      legacy plans, will otherwise be computed.
-                      Number of nodes in cluster (plan must support it)
+                      The CloudAMQP instance ID.
+                      Instance identifier
                     type: number
-                  plan:
-                    description: |-
-                      The subscription plan. See available plans.
-                      Name of the plan, see documentation for valid plans
-                    type: string
-                  region:
-                    description: |-
-                      The region to host the instance in. See available regions.
-                      Name of the region you want to create your instance in
-                    type: string
-                  rmqVersion:
-                    description: |-
-                      The Rabbit MQ version. Can be left out, will then be set to
-                      default value used by CloudAMQP API.
-                      RabbitMQ version
-                    type: string
-                  tags:
-                    description: |-
-                      One or more tags for the CloudAMQP instance, makes it possible to
-                      categories multiple instances in console view. Default there is no tags assigned.
-                      Tag the instances with optional tags
-                    items:
-                      type: string
-                    type: array
-                  vpcId:
-                    description: |-
-                      The VPC ID. Use this to create your instance in an existing
-                      VPC. See available example.
-                      The ID of the VPC to create your instance in
-                    type: number
-                  vpcIdRef:
-                    description: Reference to a VPC in cloudamqp to populate vpcId.
+                  instanceIdRef:
+                    description: Reference to a Instance in cloudamqp to populate
+                      instanceId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -345,8 +230,9 @@ spec:
                     required:
                     - name
                     type: object
-                  vpcIdSelector:
-                    description: Selector for a VPC in cloudamqp to populate vpcId.
+                  instanceIdSelector:
+                    description: Selector for a Instance in cloudamqp to populate
+                      instanceId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -385,11 +271,15 @@ spec:
                             type: string
                         type: object
                     type: object
-                  vpcSubnet:
+                  preferredDay:
                     description: |-
-                      Creates a dedicated VPC subnet, shouldn't overlap with other
-                      VPC subnet, default subnet used 10.56.72.0/24.
-                      Dedicated VPC subnet, shouldn't overlap with your current VPC's subnet
+                      Preferred day of the week when to schedule maintenance.
+                      Preferred day of the week when to run maintenance
+                    type: string
+                  preferredTime:
+                    description: |-
+                      Preferred time (UTC) of the day when to schedule maintenance.
+                      Preferred time (UTC) the day when to run maintenance
                     type: string
                 type: object
               managementPolicies:
@@ -559,134 +449,35 @@ spec:
             required:
             - forProvider
             type: object
-            x-kubernetes-validations:
-            - message: spec.forProvider.name is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
-                || (has(self.initProvider) && has(self.initProvider.name))'
-            - message: spec.forProvider.plan is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.plan)
-                || (has(self.initProvider) && has(self.initProvider.plan))'
-            - message: spec.forProvider.region is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.region)
-                || (has(self.initProvider) && has(self.initProvider.region))'
           status:
-            description: InstanceStatus defines the observed state of Instance.
+            description: MaintenanceWindowStatus defines the observed state of MaintenanceWindow.
             properties:
               atProvider:
                 properties:
-                  backend:
+                  automaticUpdates:
                     description: |-
-                      Information if the CloudAMQP instance runs either RabbitMQ or LavinMQ.
-                      Software backend used, determined by subscription plan
-                    type: string
-                  copySettings:
-                    description: |-
-                      Copy settings from one CloudAMQP instance to a new. Consists of
-                      the block documented below.
-                    items:
-                      properties:
-                        settings:
-                          description: |-
-                            Array of one or more settings to be copied. Allowed values:
-                            [alarms, config, definitions, firewall, logs, metrics, plugins]
-                            Settings to be copied. [alarms, config, definitions, firewall, logs, metrics, plugins]
-                          items:
-                            type: string
-                          type: array
-                        subscriptionId:
-                          description: |-
-                            Instance identifier of the CloudAMQP instance to copy the settings
-                            from.
-                            Instance identifier of the CloudAMQP instance to copy settings from
-                          type: string
-                      type: object
-                    type: array
-                  dedicated:
-                    description: |-
-                      Information if the CloudAMQP instance is shared or dedicated.
-                      Is the instance hosted on a dedicated server
-                    type: boolean
-                  host:
-                    description: |-
-                      The external hostname for the CloudAMQP instance.
-                      External hostname for the CloudAMQP instance
-                    type: string
-                  hostInternal:
-                    description: |-
-                      The internal hostname for the CloudAMQP instance.
-                      Internal hostname for the CloudAMQP instance
+                      Allow scheduling of a maintenance for version update
+                      once a new LavinMQ version been released.
+                      Enable automatic updates
                     type: string
                   id:
-                    description: |-
-                      The identifier (instance_id) for this resource, used as a reference by almost
-                      all other resource and data sources
+                    description: The identifier for this resource (will be same as
+                      instance identifier).
                     type: string
-                  keepAssociatedVpc:
+                  instanceId:
                     description: |-
-                      Keep associated VPC when deleting instance. Default set to
-                      false.
-                      Keep associated VPC when deleting instance
-                    type: boolean
-                  name:
-                    description: |-
-                      Name of the CloudAMQP instance.
-                      Name of the instance
-                    type: string
-                  noDefaultAlarms:
-                    description: Set to true to not create default alarms
-                    type: boolean
-                  nodes:
-                    description: |-
-                      Number of nodes, 1, 3 or 5 depending on plan used. Only needed for
-                      legacy plans, will otherwise be computed.
-                      Number of nodes in cluster (plan must support it)
+                      The CloudAMQP instance ID.
+                      Instance identifier
                     type: number
-                  plan:
+                  preferredDay:
                     description: |-
-                      The subscription plan. See available plans.
-                      Name of the plan, see documentation for valid plans
+                      Preferred day of the week when to schedule maintenance.
+                      Preferred day of the week when to run maintenance
                     type: string
-                  ready:
-                    description: Flag describing if the resource is ready
-                    type: boolean
-                  region:
+                  preferredTime:
                     description: |-
-                      The region to host the instance in. See available regions.
-                      Name of the region you want to create your instance in
-                    type: string
-                  rmqVersion:
-                    description: |-
-                      The Rabbit MQ version. Can be left out, will then be set to
-                      default value used by CloudAMQP API.
-                      RabbitMQ version
-                    type: string
-                  tags:
-                    description: |-
-                      One or more tags for the CloudAMQP instance, makes it possible to
-                      categories multiple instances in console view. Default there is no tags assigned.
-                      Tag the instances with optional tags
-                    items:
-                      type: string
-                    type: array
-                  vhost:
-                    description: |-
-                      The virtual host used by Rabbit MQ.
-                      The virtual host
-                    type: string
-                  vpcId:
-                    description: |-
-                      The VPC ID. Use this to create your instance in an existing
-                      VPC. See available example.
-                      The ID of the VPC to create your instance in
-                    type: number
-                  vpcSubnet:
-                    description: |-
-                      Creates a dedicated VPC subnet, shouldn't overlap with other
-                      VPC subnet, default subnet used 10.56.72.0/24.
-                      Dedicated VPC subnet, shouldn't overlap with your current VPC's subnet
+                      Preferred time (UTC) of the day when to schedule maintenance.
+                      Preferred time (UTC) the day when to run maintenance
                     type: string
                 type: object
               conditions:
