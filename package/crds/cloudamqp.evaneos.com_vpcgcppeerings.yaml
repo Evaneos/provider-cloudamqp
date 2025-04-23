@@ -178,7 +178,7 @@ spec:
                       VPC instance identifier
                     type: string
                   vpcIdRef:
-                    description: Reference to a Vpc in cloudamqp to populate vpcId.
+                    description: Reference to a VPC in cloudamqp to populate vpcId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -212,7 +212,7 @@ spec:
                     - name
                     type: object
                   vpcIdSelector:
-                    description: Selector for a Vpc in cloudamqp to populate vpcId.
+                    description: Selector for a VPC in cloudamqp to populate vpcId.
                     properties:
                       matchControllerRef:
                         description: |-
@@ -376,7 +376,7 @@ spec:
                       VPC instance identifier
                     type: string
                   vpcIdRef:
-                    description: Reference to a Vpc in cloudamqp to populate vpcId.
+                    description: Reference to a VPC in cloudamqp to populate vpcId.
                     properties:
                       name:
                         description: Name of the referenced object.
@@ -410,7 +410,7 @@ spec:
                     - name
                     type: object
                   vpcIdSelector:
-                    description: Selector for a Vpc in cloudamqp to populate vpcId.
+                    description: Selector for a VPC in cloudamqp to populate vpcId.
                     properties:
                       matchControllerRef:
                         description: |-

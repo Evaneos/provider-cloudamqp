@@ -68,8 +68,8 @@ func (mg *Instance) ResolveReferences(ctx context.Context, c client.Reader) erro
 		Reference:    mg.Spec.ForProvider.VPCIDRef,
 		Selector:     mg.Spec.ForProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {
@@ -84,8 +84,8 @@ func (mg *Instance) ResolveReferences(ctx context.Context, c client.Reader) erro
 		Reference:    mg.Spec.InitProvider.VPCIDRef,
 		Selector:     mg.Spec.InitProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {
@@ -168,8 +168,8 @@ func (mg *VpcGCPPeering) ResolveReferences(ctx context.Context, c client.Reader)
 		Reference:    mg.Spec.ForProvider.VPCIDRef,
 		Selector:     mg.Spec.ForProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {
@@ -200,8 +200,8 @@ func (mg *VpcGCPPeering) ResolveReferences(ctx context.Context, c client.Reader)
 		Reference:    mg.Spec.InitProvider.VPCIDRef,
 		Selector:     mg.Spec.InitProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {
@@ -242,8 +242,8 @@ func (mg *VpcPeering) ResolveReferences(ctx context.Context, c client.Reader) er
 		Reference:    mg.Spec.ForProvider.VPCIDRef,
 		Selector:     mg.Spec.ForProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {
@@ -274,8 +274,8 @@ func (mg *VpcPeering) ResolveReferences(ctx context.Context, c client.Reader) er
 		Reference:    mg.Spec.InitProvider.VPCIDRef,
 		Selector:     mg.Spec.InitProvider.VPCIDSelector,
 		To: reference.To{
-			List:    &VpcList{},
-			Managed: &Vpc{},
+			List:    &VPCList{},
+			Managed: &VPC{},
 		},
 	})
 	if err != nil {

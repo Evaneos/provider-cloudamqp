@@ -45,14 +45,14 @@ type VpcGCPPeeringInitParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Vpc
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
-	// Reference to a Vpc in cloudamqp to populate vpcId.
+	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
 	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
 
-	// Selector for a Vpc in cloudamqp to populate vpcId.
+	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
 	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
 
@@ -144,15 +144,15 @@ type VpcGCPPeeringParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Vpc
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
 	// +kubebuilder:validation:Optional
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
-	// Reference to a Vpc in cloudamqp to populate vpcId.
+	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
 	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
 
-	// Selector for a Vpc in cloudamqp to populate vpcId.
+	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
 	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
 

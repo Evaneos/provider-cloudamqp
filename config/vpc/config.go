@@ -12,7 +12,7 @@ func Configure(p *config.Provider) {
 		r.Kind = "VpcPeering"
 
 		r.References["vpc_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Vpc",
+			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
 		}
 		r.References["instance_id"] = config.Reference{
 			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance",
@@ -23,7 +23,7 @@ func Configure(p *config.Provider) {
 		r.Kind = "VpcGCPPeering"
 
 		r.References["vpc_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Vpc",
+			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
 		}
 		r.References["instance_id"] = config.Reference{
 			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance",

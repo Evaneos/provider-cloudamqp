@@ -10,7 +10,7 @@ func Configure(p *config.Provider) {
 		r.ShortGroup = "cloudamqp"
 
 		r.References["vpc_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Vpc",
+			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
 		}
 	})
 }
