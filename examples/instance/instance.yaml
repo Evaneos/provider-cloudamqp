@@ -1,11 +1,11 @@
-apiVersion: repository.github.upbound.io/v1alpha1
-kind: Repository
+apiVersion: cloudamqp.evaneos.com/v1alpha1
+kind: Instance
 metadata:
-  name: hello-crossplane
+  name: cloudamqp-instance
 spec:
   forProvider:
     name: test
-    plan: free
-    region: test-region
+    plan: lemur
+    region: google-compute-engine::europe-west1
   providerConfigRef:
     name: default
