@@ -25,4 +25,7 @@ func (tr *Plugin) Hub() {}
 func (tr *VPC) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *VpcGCPPeering) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *VpcPeering) Hub() {}

@@ -15,6 +15,7 @@ import (
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/maintenancewindow"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/plugin"
 	vpc "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/vpc"
+	vpcgcppeering "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/vpcgcppeering"
 	vpcpeering "github.com/evaneos/provider-cloudamqp/internal/controller/cloudamqp/vpcpeering"
 	providerconfig "github.com/evaneos/provider-cloudamqp/internal/controller/providerconfig"
 )
@@ -29,6 +30,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		maintenancewindow.Setup,
 		plugin.Setup,
 		vpc.Setup,
+		vpcgcppeering.Setup,
 		vpcpeering.Setup,
 		providerconfig.Setup,
 	} {

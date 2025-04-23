@@ -13,6 +13,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"cloudamqp_instance":           config.IdentifierFromProvider,
 	"cloudamqp_vpc":                config.IdentifierFromProvider,
 	"cloudamqp_vpc_peering":        config.NameAsIdentifier,
+	"cloudamqp_vpc_gcp_peering":    config.IdentifierFromProvider,
 	"cloudamqp_maintenance_window": config.IdentifierFromProvider,
 	"cloudamqp_plugin":             config.IdentifierFromProvider,
 	"cloudamqp_plugin_community":   config.IdentifierFromProvider,
