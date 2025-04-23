@@ -13,7 +13,7 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
-type PeeringInitParameters struct {
+type VpcPeeringInitParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
@@ -56,7 +56,7 @@ type PeeringInitParameters struct {
 	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
 }
 
-type PeeringObservation struct {
+type VpcPeeringObservation struct {
 
 	// The identifier for this resource.
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
@@ -88,7 +88,7 @@ type PeeringObservation struct {
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 }
 
-type PeeringParameters struct {
+type VpcPeeringParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
@@ -136,10 +136,10 @@ type PeeringParameters struct {
 	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
 }
 
-// PeeringSpec defines the desired state of Peering
-type PeeringSpec struct {
+// VpcPeeringSpec defines the desired state of VpcPeering
+type VpcPeeringSpec struct {
 	v1.ResourceSpec `json:",inline"`
-	ForProvider     PeeringParameters `json:"forProvider"`
+	ForProvider     VpcPeeringParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -150,50 +150,50 @@ type PeeringSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider PeeringInitParameters `json:"initProvider,omitempty"`
+	InitProvider VpcPeeringInitParameters `json:"initProvider,omitempty"`
 }
 
-// PeeringStatus defines the observed state of Peering.
-type PeeringStatus struct {
+// VpcPeeringStatus defines the observed state of VpcPeering.
+type VpcPeeringStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        PeeringObservation `json:"atProvider,omitempty"`
+	AtProvider        VpcPeeringObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// Peering is the Schema for the Peerings API. Accepting VPC peering request from an AWS accepter.
+// VpcPeering is the Schema for the VpcPeerings API. Accepting VPC peering request from an AWS accepter.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
-type Peering struct {
+type VpcPeering struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.peeringId) || (has(self.initProvider) && has(self.initProvider.peeringId))",message="spec.forProvider.peeringId is a required parameter"
-	Spec   PeeringSpec   `json:"spec"`
-	Status PeeringStatus `json:"status,omitempty"`
+	Spec   VpcPeeringSpec   `json:"spec"`
+	Status VpcPeeringStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// PeeringList contains a list of Peerings
-type PeeringList struct {
+// VpcPeeringList contains a list of VpcPeerings
+type VpcPeeringList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Peering `json:"items"`
+	Items           []VpcPeering `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	Peering_Kind             = "Peering"
-	Peering_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: Peering_Kind}.String()
-	Peering_KindAPIVersion   = Peering_Kind + "." + CRDGroupVersion.String()
-	Peering_GroupVersionKind = CRDGroupVersion.WithKind(Peering_Kind)
+	VpcPeering_Kind             = "VpcPeering"
+	VpcPeering_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: VpcPeering_Kind}.String()
+	VpcPeering_KindAPIVersion   = VpcPeering_Kind + "." + CRDGroupVersion.String()
+	VpcPeering_GroupVersionKind = CRDGroupVersion.WithKind(VpcPeering_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&Peering{}, &PeeringList{})
+	SchemeBuilder.Register(&VpcPeering{}, &VpcPeeringList{})
 }

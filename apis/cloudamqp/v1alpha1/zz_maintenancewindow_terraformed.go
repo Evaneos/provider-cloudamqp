@@ -14,18 +14,18 @@ import (
 	"github.com/crossplane/upjet/pkg/resource/json"
 )
 
-// GetTerraformResourceType returns Terraform resource type for this Peering
-func (mg *Peering) GetTerraformResourceType() string {
-	return "cloudamqp_vpc_peering"
+// GetTerraformResourceType returns Terraform resource type for this MaintenanceWindow
+func (mg *MaintenanceWindow) GetTerraformResourceType() string {
+	return "cloudamqp_maintenance_window"
 }
 
-// GetConnectionDetailsMapping for this Peering
-func (tr *Peering) GetConnectionDetailsMapping() map[string]string {
+// GetConnectionDetailsMapping for this MaintenanceWindow
+func (tr *MaintenanceWindow) GetConnectionDetailsMapping() map[string]string {
 	return nil
 }
 
-// GetObservation of this Peering
-func (tr *Peering) GetObservation() (map[string]any, error) {
+// GetObservation of this MaintenanceWindow
+func (tr *MaintenanceWindow) GetObservation() (map[string]any, error) {
 	o, err := json.TFParser.Marshal(tr.Status.AtProvider)
 	if err != nil {
 		return nil, err
@@ -34,8 +34,8 @@ func (tr *Peering) GetObservation() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(o, &base)
 }
 
-// SetObservation for this Peering
-func (tr *Peering) SetObservation(obs map[string]any) error {
+// SetObservation for this MaintenanceWindow
+func (tr *MaintenanceWindow) SetObservation(obs map[string]any) error {
 	p, err := json.TFParser.Marshal(obs)
 	if err != nil {
 		return err
@@ -43,16 +43,16 @@ func (tr *Peering) SetObservation(obs map[string]any) error {
 	return json.TFParser.Unmarshal(p, &tr.Status.AtProvider)
 }
 
-// GetID returns ID of underlying Terraform resource of this Peering
-func (tr *Peering) GetID() string {
+// GetID returns ID of underlying Terraform resource of this MaintenanceWindow
+func (tr *MaintenanceWindow) GetID() string {
 	if tr.Status.AtProvider.ID == nil {
 		return ""
 	}
 	return *tr.Status.AtProvider.ID
 }
 
-// GetParameters of this Peering
-func (tr *Peering) GetParameters() (map[string]any, error) {
+// GetParameters of this MaintenanceWindow
+func (tr *MaintenanceWindow) GetParameters() (map[string]any, error) {
 	p, err := json.TFParser.Marshal(tr.Spec.ForProvider)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (tr *Peering) GetParameters() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(p, &base)
 }
 
-// SetParameters for this Peering
-func (tr *Peering) SetParameters(params map[string]any) error {
+// SetParameters for this MaintenanceWindow
+func (tr *MaintenanceWindow) SetParameters(params map[string]any) error {
 	p, err := json.TFParser.Marshal(params)
 	if err != nil {
 		return err
@@ -70,8 +70,8 @@ func (tr *Peering) SetParameters(params map[string]any) error {
 	return json.TFParser.Unmarshal(p, &tr.Spec.ForProvider)
 }
 
-// GetInitParameters of this Peering
-func (tr *Peering) GetInitParameters() (map[string]any, error) {
+// GetInitParameters of this MaintenanceWindow
+func (tr *MaintenanceWindow) GetInitParameters() (map[string]any, error) {
 	p, err := json.TFParser.Marshal(tr.Spec.InitProvider)
 	if err != nil {
 		return nil, err
@@ -80,8 +80,8 @@ func (tr *Peering) GetInitParameters() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(p, &base)
 }
 
-// GetInitParameters of this Peering
-func (tr *Peering) GetMergedParameters(shouldMergeInitProvider bool) (map[string]any, error) {
+// GetInitParameters of this MaintenanceWindow
+func (tr *MaintenanceWindow) GetMergedParameters(shouldMergeInitProvider bool) (map[string]any, error) {
 	params, err := tr.GetParameters()
 	if err != nil {
 		return nil, errors.Wrapf(err, "cannot get parameters for resource '%q'", tr.GetName())
@@ -110,10 +110,10 @@ func (tr *Peering) GetMergedParameters(shouldMergeInitProvider bool) (map[string
 	return params, nil
 }
 
-// LateInitialize this Peering using its observed tfState.
+// LateInitialize this MaintenanceWindow using its observed tfState.
 // returns True if there are any spec changes for the resource.
-func (tr *Peering) LateInitialize(attrs []byte) (bool, error) {
-	params := &PeeringParameters{}
+func (tr *MaintenanceWindow) LateInitialize(attrs []byte) (bool, error) {
+	params := &MaintenanceWindowParameters{}
 	if err := json.TFParser.Unmarshal(attrs, params); err != nil {
 		return false, errors.Wrap(err, "failed to unmarshal Terraform state parameters for late-initialization")
 	}
@@ -124,6 +124,6 @@ func (tr *Peering) LateInitialize(attrs []byte) (bool, error) {
 }
 
 // GetTerraformSchemaVersion returns the associated Terraform schema version
-func (tr *Peering) GetTerraformSchemaVersion() int {
+func (tr *MaintenanceWindow) GetTerraformSchemaVersion() int {
 	return 0
 }

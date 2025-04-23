@@ -68,63 +68,63 @@ func (mg *Instance) SetWriteConnectionSecretToReference(r *xpv1.SecretReference)
 	mg.Spec.WriteConnectionSecretToReference = r
 }
 
-// GetCondition of this Peering.
-func (mg *Peering) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+// GetCondition of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
 	return mg.Status.GetCondition(ct)
 }
 
-// GetDeletionPolicy of this Peering.
-func (mg *Peering) GetDeletionPolicy() xpv1.DeletionPolicy {
+// GetDeletionPolicy of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicies of this Peering.
-func (mg *Peering) GetManagementPolicies() xpv1.ManagementPolicies {
+// GetManagementPolicies of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetManagementPolicies() xpv1.ManagementPolicies {
 	return mg.Spec.ManagementPolicies
 }
 
-// GetProviderConfigReference of this Peering.
-func (mg *Peering) GetProviderConfigReference() *xpv1.Reference {
+// GetProviderConfigReference of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
 }
 
-// GetPublishConnectionDetailsTo of this Peering.
-func (mg *Peering) GetPublishConnectionDetailsTo() *xpv1.PublishConnectionDetailsTo {
+// GetPublishConnectionDetailsTo of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetPublishConnectionDetailsTo() *xpv1.PublishConnectionDetailsTo {
 	return mg.Spec.PublishConnectionDetailsTo
 }
 
-// GetWriteConnectionSecretToReference of this Peering.
-func (mg *Peering) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
+// GetWriteConnectionSecretToReference of this MaintenanceWindow.
+func (mg *MaintenanceWindow) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
 	return mg.Spec.WriteConnectionSecretToReference
 }
 
-// SetConditions of this Peering.
-func (mg *Peering) SetConditions(c ...xpv1.Condition) {
+// SetConditions of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetConditions(c ...xpv1.Condition) {
 	mg.Status.SetConditions(c...)
 }
 
-// SetDeletionPolicy of this Peering.
-func (mg *Peering) SetDeletionPolicy(r xpv1.DeletionPolicy) {
+// SetDeletionPolicy of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicies of this Peering.
-func (mg *Peering) SetManagementPolicies(r xpv1.ManagementPolicies) {
+// SetManagementPolicies of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetManagementPolicies(r xpv1.ManagementPolicies) {
 	mg.Spec.ManagementPolicies = r
 }
 
-// SetProviderConfigReference of this Peering.
-func (mg *Peering) SetProviderConfigReference(r *xpv1.Reference) {
+// SetProviderConfigReference of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
 }
 
-// SetPublishConnectionDetailsTo of this Peering.
-func (mg *Peering) SetPublishConnectionDetailsTo(r *xpv1.PublishConnectionDetailsTo) {
+// SetPublishConnectionDetailsTo of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetPublishConnectionDetailsTo(r *xpv1.PublishConnectionDetailsTo) {
 	mg.Spec.PublishConnectionDetailsTo = r
 }
 
-// SetWriteConnectionSecretToReference of this Peering.
-func (mg *Peering) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
+// SetWriteConnectionSecretToReference of this MaintenanceWindow.
+func (mg *MaintenanceWindow) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }
 
@@ -185,5 +185,65 @@ func (mg *VPC) SetPublishConnectionDetailsTo(r *xpv1.PublishConnectionDetailsTo)
 
 // SetWriteConnectionSecretToReference of this VPC.
 func (mg *VPC) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
+	mg.Spec.WriteConnectionSecretToReference = r
+}
+
+// GetCondition of this VpcPeering.
+func (mg *VpcPeering) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+	return mg.Status.GetCondition(ct)
+}
+
+// GetDeletionPolicy of this VpcPeering.
+func (mg *VpcPeering) GetDeletionPolicy() xpv1.DeletionPolicy {
+	return mg.Spec.DeletionPolicy
+}
+
+// GetManagementPolicies of this VpcPeering.
+func (mg *VpcPeering) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
+}
+
+// GetProviderConfigReference of this VpcPeering.
+func (mg *VpcPeering) GetProviderConfigReference() *xpv1.Reference {
+	return mg.Spec.ProviderConfigReference
+}
+
+// GetPublishConnectionDetailsTo of this VpcPeering.
+func (mg *VpcPeering) GetPublishConnectionDetailsTo() *xpv1.PublishConnectionDetailsTo {
+	return mg.Spec.PublishConnectionDetailsTo
+}
+
+// GetWriteConnectionSecretToReference of this VpcPeering.
+func (mg *VpcPeering) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
+	return mg.Spec.WriteConnectionSecretToReference
+}
+
+// SetConditions of this VpcPeering.
+func (mg *VpcPeering) SetConditions(c ...xpv1.Condition) {
+	mg.Status.SetConditions(c...)
+}
+
+// SetDeletionPolicy of this VpcPeering.
+func (mg *VpcPeering) SetDeletionPolicy(r xpv1.DeletionPolicy) {
+	mg.Spec.DeletionPolicy = r
+}
+
+// SetManagementPolicies of this VpcPeering.
+func (mg *VpcPeering) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
+}
+
+// SetProviderConfigReference of this VpcPeering.
+func (mg *VpcPeering) SetProviderConfigReference(r *xpv1.Reference) {
+	mg.Spec.ProviderConfigReference = r
+}
+
+// SetPublishConnectionDetailsTo of this VpcPeering.
+func (mg *VpcPeering) SetPublishConnectionDetailsTo(r *xpv1.PublishConnectionDetailsTo) {
+	mg.Spec.PublishConnectionDetailsTo = r
+}
+
+// SetWriteConnectionSecretToReference of this VpcPeering.
+func (mg *VpcPeering) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }

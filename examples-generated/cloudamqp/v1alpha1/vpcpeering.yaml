@@ -1,8 +1,8 @@
 apiVersion: cloudamqp.evaneos.com/v1alpha1
-kind: Peering
+kind: VpcPeering
 metadata:
   annotations:
-    meta.upbound.io/example-id: cloudamqp/v1alpha1/peering
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/vpcpeering
   labels:
     testing.upbound.io/example-name: vpc_accept_peering
   name: vpc-accept-peering
@@ -19,7 +19,7 @@ apiVersion: cloudamqp.evaneos.com/v1alpha1
 kind: Instance
 metadata:
   annotations:
-    meta.upbound.io/example-id: cloudamqp/v1alpha1/peering
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/vpcpeering
   labels:
     testing.upbound.io/example-name: instance
   name: instance

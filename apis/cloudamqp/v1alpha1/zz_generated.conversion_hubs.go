@@ -10,7 +10,10 @@ package v1alpha1
 func (tr *Instance) Hub() {}
 
 // Hub marks this type as a conversion hub.
-func (tr *Peering) Hub() {}
+func (tr *MaintenanceWindow) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *VPC) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VpcPeering) Hub() {}
