@@ -12,6 +12,7 @@ import (
 
 	"github.com/evaneos/provider-cloudamqp/config/instance"
 	"github.com/evaneos/provider-cloudamqp/config/maintenance"
+	"github.com/evaneos/provider-cloudamqp/config/plugin"
 	"github.com/evaneos/provider-cloudamqp/config/vpc"
 )
 
@@ -41,6 +42,7 @@ func GetProvider() *ujconfig.Provider {
 		instance.Configure,
 		vpc.Configure,
 		maintenance.Configure,
+		plugin.Configure,
 	} {
 		configure(pc)
 	}

@@ -12,8 +12,10 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	// Import requires using a randomly generated ID from provider: nl-2e21sda
 	"cloudamqp_instance":           config.IdentifierFromProvider,
 	"cloudamqp_vpc":                config.IdentifierFromProvider,
-	"cloudamqp_vpc_peering":        config.IdentifierFromProvider,
+	"cloudamqp_vpc_peering":        config.NameAsIdentifier,
 	"cloudamqp_maintenance_window": config.IdentifierFromProvider,
+	"cloudamqp_plugin":             config.IdentifierFromProvider,
+	"cloudamqp_plugin_community":   config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

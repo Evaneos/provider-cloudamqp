@@ -8,6 +8,15 @@ package v1alpha1
 
 import resource "github.com/crossplane/crossplane-runtime/pkg/resource"
 
+// GetItems of this CommunityList.
+func (l *CommunityList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
 // GetItems of this InstanceList.
 func (l *InstanceList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))
@@ -19,6 +28,15 @@ func (l *InstanceList) GetItems() []resource.Managed {
 
 // GetItems of this MaintenanceWindowList.
 func (l *MaintenanceWindowList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
+// GetItems of this PluginList.
+func (l *PluginList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))
 	for i := range l.Items {
 		items[i] = &l.Items[i]
