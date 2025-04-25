@@ -1,6 +1,8 @@
 package instance
 
-import "github.com/crossplane/upjet/pkg/config"
+import (
+	"github.com/crossplane/upjet/pkg/config"
+)
 
 // Configure configures individual resources by adding custom ResourceConfigurators.
 func Configure(p *config.Provider) {
@@ -11,6 +13,24 @@ func Configure(p *config.Provider) {
 
 		r.References["vpc_id"] = config.Reference{
 			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
+		}
+
+		r.Sensitive.AdditionalConnectionDetailsFn = func(attr map[string]any) (map[string][]byte, error) {
+			conn := map[string][]byte{}
+
+			if a, ok := attr["host"].(string); ok {
+				conn["host"] = []byte(a)
+			}
+			if a, ok := attr["host_internal"].(string); ok {
+				conn["host_internal"] = []byte(a)
+			}
+			if a, ok := attr["vhost"].(string); ok {
+				conn["vhost"] = []byte(a)
+			}
+			if a, ok := attr["vpc_id"].(string); ok {
+				conn["vpc_id"] = []byte(a)
+			}
+			return conn, nil
 		}
 	})
 }
