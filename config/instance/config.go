@@ -1,6 +1,8 @@
 package instance
 
 import (
+	"regexp"
+
 	"github.com/crossplane/upjet/pkg/config"
 )
 
@@ -17,6 +19,15 @@ func Configure(p *config.Provider) {
 
 		r.Sensitive.AdditionalConnectionDetailsFn = func(attr map[string]any) (map[string][]byte, error) {
 			conn := map[string][]byte{}
+
+			if a, ok := attr["url"].(string); ok {
+				re := regexp.MustCompile(`amqp://(\w+):(.+)@`)
+				matches := re.FindStringSubmatch(a)
+				if len(matches) == 3 {
+					conn["username"] = []byte(matches[1])
+					conn["password"] = []byte(matches[2])
+				}
+			}
 
 			if a, ok := attr["host"].(string); ok {
 				conn["host"] = []byte(a)
