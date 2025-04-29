@@ -34,10 +34,10 @@ func Configure(p *config.Provider) {
 		r.Kind = "VpcPeering"
 
 		r.References["vpc_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
+			TerraformName: "cloudamqp_vpc",
 		}
 		r.References["instance_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance",
+			TerraformName: "cloudamqp_instance",
 		}
 	})
 	p.AddResourceConfigurator("cloudamqp_vpc_gcp_peering", func(r *config.Resource) {
@@ -45,10 +45,10 @@ func Configure(p *config.Provider) {
 		r.Kind = "VpcGCPPeering"
 
 		r.References["vpc_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC",
+			TerraformName: "cloudamqp_vpc",
 		}
 		r.References["instance_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance",
+			TerraformName: "cloudamqp_instance",
 		}
 	})
 }

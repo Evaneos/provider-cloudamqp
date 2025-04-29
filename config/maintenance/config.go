@@ -8,7 +8,7 @@ func Configure(p *config.Provider) {
 		r.ShortGroup = "cloudamqp"
 		r.Kind = "MaintenanceWindow"
 		r.References["instance_id"] = config.Reference{
-			Type: "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance",
+			TerraformName: "cloudamqp_instance",
 		}
 	})
 }
