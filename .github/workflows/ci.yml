@@ -316,8 +316,10 @@ jobs:
         with:
           name: output
           path: _output/**
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+
+      - name: Login with up
+        run: ./.cache/tools/linux_x86_64/up-v0.28.0 login --username=${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }} --password="${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW }}"
+
       - name: Publish Artifacts
         if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
         run: make publish BRANCH_NAME=${GITHUB_REF##*/}
