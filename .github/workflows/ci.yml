@@ -317,6 +317,10 @@ jobs:
           name: output
           path: _output/**
 
+      - name: Up login
+        if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
+        run: up login --username="${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }}" --password="${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW }}"
+
       - name: Publish Artifacts
         if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
         run: make publish BRANCH_NAME=${GITHUB_REF##*/}
