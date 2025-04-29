@@ -316,7 +316,8 @@ jobs:
         with:
           name: output
           path: _output/**
-
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Publish Artifacts
         if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
         run: make publish BRANCH_NAME=${GITHUB_REF##*/}
