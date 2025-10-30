@@ -13,7 +13,7 @@ metadata:
       A Crossplane provider for CloudAMQP management.
     meta.crossplane.io/readme: |
      `provider-cloudamqp` is a [Crossplane](https://crossplane.io/) provider that
-      is built using [Upjet](https://github.com/crossplane/upjet) code
+      is built using [Upjet](https://github.com/crossplane/upjet/v2) code
       generation tools and exposes XRM-conformant managed resources for the
       RabbitMQ API.
 

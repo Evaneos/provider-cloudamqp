@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	// "github.com/crossplane/crossplane-runtime/pkg/logging"
-	"github.com/crossplane/upjet/pkg/config"
+	// "github.com/crossplane/crossplane-runtime/v2/pkg/logging"
+	"github.com/crossplane/upjet/v2/pkg/config"
 	// "sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
