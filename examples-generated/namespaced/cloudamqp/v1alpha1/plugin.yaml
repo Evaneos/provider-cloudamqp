@@ -1,0 +1,14 @@
+apiVersion: cloudamqp.m.evaneos.com/v1alpha1
+kind: Plugin
+metadata:
+  annotations:
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/plugin
+  labels:
+    testing.upbound.io/example-name: rabbitmq_top
+  name: rabbitmq-top
+  namespace: upbound-system
+spec:
+  forProvider:
+    enabled: true
+    instanceId: ${cloudamqp_instance.instance.id}
+    name: rabbitmq_top

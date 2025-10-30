@@ -9,8 +9,8 @@ package plugin
 import (
 	"time"
 
-	"github.com/crossplane/crossplane-runtime/v2/pkg/connection"
 	"github.com/crossplane/crossplane-runtime/v2/pkg/event"
+	xpfeature "github.com/crossplane/crossplane-runtime/v2/pkg/feature"
 	"github.com/crossplane/crossplane-runtime/v2/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/v2/pkg/reconciler/managed"
 	xpresource "github.com/crossplane/crossplane-runtime/v2/pkg/resource"
@@ -21,18 +21,24 @@ import (
 	"github.com/pkg/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1"
+	v1alpha1 "github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1"
 	features "github.com/evaneos/provider-cloudamqp/internal/features"
 )
+
+// SetupGated adds a controller that reconciles Plugin managed resources.
+func SetupGated(mgr ctrl.Manager, o tjcontroller.Options) error {
+	o.Options.Gate.Register(func() {
+		if err := Setup(mgr, o); err != nil {
+			mgr.GetLogger().Error(err, "unable to setup reconciler", "gvk", v1alpha1.Plugin_GroupVersionKind.String())
+		}
+	}, v1alpha1.Plugin_GroupVersionKind)
+	return nil
+}
 
 // Setup adds a controller that reconciles Plugin managed resources.
 func Setup(mgr ctrl.Manager, o tjcontroller.Options) error {
 	name := managed.ControllerName(v1alpha1.Plugin_GroupVersionKind.String())
 	var initializers managed.InitializerChain
-	cps := []managed.ConnectionPublisher{managed.NewAPISecretPublisher(mgr.GetClient(), mgr.GetScheme())}
-	if o.SecretStoreConfigGVK != nil {
-		cps = append(cps, connection.NewDetailsManager(mgr.GetClient(), *o.SecretStoreConfigGVK, connection.WithTLSConfig(o.ESSOptions.TLSConfig)))
-	}
 	eventHandler := handler.NewEventHandler(handler.WithLogger(o.Logger.WithValues("gvk", v1alpha1.Plugin_GroupVersionKind)))
 	ac := tjcontroller.NewAPICallbacks(mgr, xpresource.ManagedKind(v1alpha1.Plugin_GroupVersionKind), tjcontroller.WithEventHandler(eventHandler))
 	opts := []managed.ReconcilerOption{
@@ -44,7 +50,6 @@ func Setup(mgr ctrl.Manager, o tjcontroller.Options) error {
 		managed.WithFinalizer(terraform.NewWorkspaceFinalizer(o.WorkspaceStore, xpresource.NewAPIFinalizer(mgr.GetClient(), managed.FinalizerName))),
 		managed.WithTimeout(3 * time.Minute),
 		managed.WithInitializers(initializers),
-		managed.WithConnectionPublishers(cps...),
 		managed.WithPollInterval(o.PollInterval),
 	}
 	if o.PollJitter != 0 {
@@ -74,6 +79,10 @@ func Setup(mgr ctrl.Manager, o tjcontroller.Options) error {
 		if err := mgr.Add(stateMetricsRecorder); err != nil {
 			return errors.Wrap(err, "cannot register MR state metrics recorder for kind v1alpha1.PluginList")
 		}
+	}
+
+	if o.Features.Enabled(xpfeature.EnableAlphaChangeLogs) {
+		opts = append(opts, managed.WithChangeLogger(o.ChangeLogOptions.ChangeLogger))
 	}
 
 	r := managed.NewReconciler(mgr, xpresource.ManagedKind(v1alpha1.Plugin_GroupVersionKind), opts...)

@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
 )
 
 type CopySettingsInitParameters struct {
@@ -98,16 +99,16 @@ type InstanceInitParameters struct {
 	// The VPC ID. Use this to create your instance in an existing
 	// VPC. See available example.
 	// The ID of the VPC to create your instance in
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.VPC
 	VPCID *float64 `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
+	VPCIDRef *v1.NamespacedReference `json:"vpcIdRef,omitempty" tf:"-"`
 
 	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
+	VPCIDSelector *v1.NamespacedSelector `json:"vpcIdSelector,omitempty" tf:"-"`
 
 	// Creates a dedicated VPC subnet, shouldn't overlap with other
 	// VPC subnet, default subnet used 10.56.72.0/24.
@@ -247,17 +248,17 @@ type InstanceParameters struct {
 	// The VPC ID. Use this to create your instance in an existing
 	// VPC. See available example.
 	// The ID of the VPC to create your instance in
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.VPC
 	// +kubebuilder:validation:Optional
 	VPCID *float64 `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
+	VPCIDRef *v1.NamespacedReference `json:"vpcIdRef,omitempty" tf:"-"`
 
 	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
+	VPCIDSelector *v1.NamespacedSelector `json:"vpcIdSelector,omitempty" tf:"-"`
 
 	// Creates a dedicated VPC subnet, shouldn't overlap with other
 	// VPC subnet, default subnet used 10.56.72.0/24.
@@ -268,8 +269,8 @@ type InstanceParameters struct {
 
 // InstanceSpec defines the desired state of Instance
 type InstanceSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     InstanceParameters `json:"forProvider"`
+	v2.ManagedResourceSpec `json:",inline"`
+	ForProvider            InstanceParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -298,7 +299,7 @@ type InstanceStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
+// +kubebuilder:resource:scope=Namespaced,categories={crossplane,managed,cloudamqp}
 type Instance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

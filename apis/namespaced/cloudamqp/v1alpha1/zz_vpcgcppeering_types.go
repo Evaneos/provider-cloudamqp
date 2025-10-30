@@ -11,22 +11,23 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
 )
 
 type VpcGCPPeeringInitParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.Instance
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDRef *v1.Reference `json:"instanceIdRef,omitempty" tf:"-"`
+	InstanceIDRef *v1.NamespacedReference `json:"instanceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
+	InstanceIDSelector *v1.NamespacedSelector `json:"instanceIdSelector,omitempty" tf:"-"`
 
 	// Network URI of the VPC network to which you will peer with.
 	// See examples above for the format.
@@ -45,16 +46,16 @@ type VpcGCPPeeringInitParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.VPC
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
+	VPCIDRef *v1.NamespacedReference `json:"vpcIdRef,omitempty" tf:"-"`
 
 	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
+	VPCIDSelector *v1.NamespacedSelector `json:"vpcIdSelector,omitempty" tf:"-"`
 
 	// Makes the resource wait until the peering is connected.
 	// Default set to false.
@@ -112,17 +113,17 @@ type VpcGCPPeeringParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.Instance
 	// +kubebuilder:validation:Optional
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDRef *v1.Reference `json:"instanceIdRef,omitempty" tf:"-"`
+	InstanceIDRef *v1.NamespacedReference `json:"instanceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
+	InstanceIDSelector *v1.NamespacedSelector `json:"instanceIdSelector,omitempty" tf:"-"`
 
 	// Network URI of the VPC network to which you will peer with.
 	// See examples above for the format.
@@ -144,17 +145,17 @@ type VpcGCPPeeringParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.VPC
 	// +kubebuilder:validation:Optional
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDRef *v1.Reference `json:"vpcIdRef,omitempty" tf:"-"`
+	VPCIDRef *v1.NamespacedReference `json:"vpcIdRef,omitempty" tf:"-"`
 
 	// Selector for a VPC in cloudamqp to populate vpcId.
 	// +kubebuilder:validation:Optional
-	VPCIDSelector *v1.Selector `json:"vpcIdSelector,omitempty" tf:"-"`
+	VPCIDSelector *v1.NamespacedSelector `json:"vpcIdSelector,omitempty" tf:"-"`
 
 	// Makes the resource wait until the peering is connected.
 	// Default set to false.
@@ -165,8 +166,8 @@ type VpcGCPPeeringParameters struct {
 
 // VpcGCPPeeringSpec defines the desired state of VpcGCPPeering
 type VpcGCPPeeringSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     VpcGCPPeeringParameters `json:"forProvider"`
+	v2.ManagedResourceSpec `json:",inline"`
+	ForProvider            VpcGCPPeeringParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -195,7 +196,7 @@ type VpcGCPPeeringStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
+// +kubebuilder:resource:scope=Namespaced,categories={crossplane,managed,cloudamqp}
 type VpcGCPPeering struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

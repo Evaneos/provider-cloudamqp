@@ -98,7 +98,7 @@ type InstanceInitParameters struct {
 	// The VPC ID. Use this to create your instance in an existing
 	// VPC. See available example.
 	// The ID of the VPC to create your instance in
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.VPC
 	VPCID *float64 `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
@@ -247,7 +247,7 @@ type InstanceParameters struct {
 	// The VPC ID. Use this to create your instance in an existing
 	// VPC. See available example.
 	// The ID of the VPC to create your instance in
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.VPC
 	// +kubebuilder:validation:Optional
 	VPCID *float64 `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 

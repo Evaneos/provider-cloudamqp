@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "cloudamqp.m.evaneos.com"
+	Group   = "cloudamqp.evaneos.com"
 	Version = "v1beta1"
 )
 
@@ -31,6 +31,14 @@ var (
 	ProviderConfigGroupKind        = schema.GroupKind{Group: Group, Kind: ProviderConfigKind}.String()
 	ProviderConfigKindAPIVersion   = ProviderConfigKind + "." + SchemeGroupVersion.String()
 	ProviderConfigGroupVersionKind = SchemeGroupVersion.WithKind(ProviderConfigKind)
+)
+
+// ClusterProviderConfig type metadata.
+var (
+	ClusterProviderConfigKind             = reflect.TypeOf(ClusterProviderConfig{}).Name()
+	ClusterProviderConfigGroupKind        = schema.GroupKind{Group: Group, Kind: ClusterProviderConfigKind}.String()
+	ClusterProviderConfigKindAPIVersion   = ClusterProviderConfigKind + "." + SchemeGroupVersion.String()
+	ClusterProviderConfigGroupVersionKind = SchemeGroupVersion.WithKind(ClusterProviderConfigKind)
 )
 
 // ProviderConfigUsage type metadata.

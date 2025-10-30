@@ -1,0 +1,36 @@
+apiVersion: cloudamqp.evaneos.com/v1alpha1
+kind: VPC
+metadata:
+  annotations:
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: vpc
+  name: vpc
+spec:
+  forProvider:
+    name: <VPC name>
+    region: amazon-web-services::us-east-1
+    subnet: 10.56.72.0/24
+    tags: []
+
+---
+
+apiVersion: cloudamqp.evaneos.com/v1alpha1
+kind: Instance
+metadata:
+  annotations:
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/vpc
+  labels:
+    testing.upbound.io/example-name: instance
+  name: instance
+spec:
+  forProvider:
+    keepAssociatedVpc: true
+    name: <Instance name>
+    nodes: 1
+    plan: penguin-1
+    region: amazon-web-services::us-east-1
+    tags: []
+    vpcIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: vpc

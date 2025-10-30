@@ -17,7 +17,7 @@ type FirewallInitParameters struct {
 
 	// The CloudAMQP instance ID.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.Instance
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
@@ -71,7 +71,7 @@ type FirewallParameters struct {
 
 	// The CloudAMQP instance ID.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.Instance
 	// +kubebuilder:validation:Optional
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 

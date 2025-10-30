@@ -11,22 +11,23 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
 )
 
 type FirewallInitParameters struct {
 
 	// The CloudAMQP instance ID.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.Instance
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDRef *v1.Reference `json:"instanceIdRef,omitempty" tf:"-"`
+	InstanceIDRef *v1.NamespacedReference `json:"instanceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
+	InstanceIDSelector *v1.NamespacedSelector `json:"instanceIdSelector,omitempty" tf:"-"`
 
 	// An array of rules, minimum of 1 needs to be configured. Each rules
 	// block consists of the field documented below.
@@ -71,17 +72,17 @@ type FirewallParameters struct {
 
 	// The CloudAMQP instance ID.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/namespaced/cloudamqp/v1alpha1.Instance
 	// +kubebuilder:validation:Optional
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDRef *v1.Reference `json:"instanceIdRef,omitempty" tf:"-"`
+	InstanceIDRef *v1.NamespacedReference `json:"instanceIdRef,omitempty" tf:"-"`
 
 	// Selector for a Instance in cloudamqp to populate instanceId.
 	// +kubebuilder:validation:Optional
-	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
+	InstanceIDSelector *v1.NamespacedSelector `json:"instanceIdSelector,omitempty" tf:"-"`
 
 	// An array of rules, minimum of 1 needs to be configured. Each rules
 	// block consists of the field documented below.
@@ -164,8 +165,8 @@ type RulesParameters struct {
 
 // FirewallSpec defines the desired state of Firewall
 type FirewallSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     FirewallParameters `json:"forProvider"`
+	v2.ManagedResourceSpec `json:",inline"`
+	ForProvider            FirewallParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -194,7 +195,7 @@ type FirewallStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
+// +kubebuilder:resource:scope=Namespaced,categories={crossplane,managed,cloudamqp}
 type Firewall struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

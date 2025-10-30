@@ -11,7 +11,7 @@ import (
 	"github.com/crossplane/upjet/v2/pkg/controller"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/evaneos/provider-cloudamqp/apis/v1beta1"
+	"github.com/evaneos/provider-cloudamqp/apis/cluster/v1beta1"
 )
 
 // Setup adds a controller that reconciles ProviderConfigs by accounting for

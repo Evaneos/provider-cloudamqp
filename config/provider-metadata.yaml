@@ -49,6 +49,7 @@ resources:
                 }
               references:
                 instance_id: cloudamqp_instance.instance.id
+                recipients: cloudamqp_notification.recipient_01.id
               dependencies:
                 cloudamqp_notification.recipient_01: |-
                     {
@@ -72,6 +73,7 @@ resources:
                 }
               references:
                 instance_id: cloudamqp_instance.instance.id
+                recipients: cloudamqp_notification.recipient_01.id
               dependencies:
                 cloudamqp_notification.recipient_01: |-
                     {
@@ -92,6 +94,7 @@ resources:
                 }
               references:
                 instance_id: cloudamqp_instance.instance.id
+                recipients: cloudamqp_notification.recipient_01.id
               dependencies:
                 cloudamqp_notification.recipient_01: |-
                     {

@@ -17,7 +17,7 @@ type VpcGCPPeeringInitParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.Instance
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
 	// Reference to a Instance in cloudamqp to populate instanceId.
@@ -45,7 +45,7 @@ type VpcGCPPeeringInitParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.VPC
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 
 	// Reference to a VPC in cloudamqp to populate vpcId.
@@ -112,7 +112,7 @@ type VpcGCPPeeringParameters struct {
 
 	// The CloudAMQP instance identifier.
 	// Instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.Instance
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.Instance
 	// +kubebuilder:validation:Optional
 	InstanceID *float64 `json:"instanceId,omitempty" tf:"instance_id,omitempty"`
 
@@ -144,7 +144,7 @@ type VpcGCPPeeringParameters struct {
 
 	// The managed VPC identifier.
 	// VPC instance identifier
-	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cloudamqp/v1alpha1.VPC
+	// +crossplane:generate:reference:type=github.com/evaneos/provider-cloudamqp/apis/cluster/cloudamqp/v1alpha1.VPC
 	// +kubebuilder:validation:Optional
 	VPCID *string `json:"vpcId,omitempty" tf:"vpc_id,omitempty"`
 

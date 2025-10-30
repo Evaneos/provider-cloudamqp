@@ -11,7 +11,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "cloudamqp.m.evaneos.com"
+	Group   = "m.cloudamqp.evaneos.com"
 	Version = "v1alpha1"
 )
 
