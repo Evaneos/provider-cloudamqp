@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "cloudamqp.evaneos.com"
+	Group   = "m.cloudamqp.evaneos.com"
 	Version = "v1beta1"
 )
 
@@ -57,4 +57,5 @@ var (
 func init() {
 	SchemeBuilder.Register(&ProviderConfig{}, &ProviderConfigList{})
 	SchemeBuilder.Register(&ProviderConfigUsage{}, &ProviderConfigUsageList{})
+	SchemeBuilder.Register(&ClusterProviderConfig{}, &ClusterProviderConfigList{})
 }
