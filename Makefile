@@ -1,3 +1,18 @@
+# Correction : détection automatique de la plateforme pour le téléchargement de Terraform
+SAFEHOST_PLATFORM ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')_$(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+# Correction : définir les dossiers outils/travail si non définis (Upjet v2)
+TOOLS_HOST_DIR ?= .tools
+WORK_DIR ?= .work
+
+# Génération Upjet v2 : CRDs multi-scope + schéma provider
+CRD_OUTPUT_DIR ?= package/crds
+CRD_API_DIRS ?= ./apis/...
+
+.PHONY: generate
+generate: generate.init
+	@echo "Génération des CRDs cluster/namespaced avec controller-gen (Upjet v2)"
+	controller-gen crd:allowDangerousTypes=true paths=$(CRD_API_DIRS) output:crd:dir=$(CRD_OUTPUT_DIR)
+	@echo "CRDs générés dans $(CRD_OUTPUT_DIR)"
 # ====================================================================================
 # Setup Project
 
@@ -110,22 +125,24 @@ ifneq ($(TERRAFORM_VERSION_VALID),1)
 	$(error invalid TERRAFORM_VERSION $(TERRAFORM_VERSION), must be less than 1.6.0 since that version introduced a not permitted BSL license))
 endif
 
+
 $(TERRAFORM): check-terraform-version
-	@$(INFO) installing terraform $(HOSTOS)-$(HOSTARCH)
+	@echo "installing terraform $(HOSTOS)-$(HOSTARCH)"
 	@mkdir -p $(TOOLS_HOST_DIR)/tmp-terraform
 	@curl -fsSL https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_$(SAFEHOST_PLATFORM).zip -o $(TOOLS_HOST_DIR)/tmp-terraform/terraform.zip
 	@unzip $(TOOLS_HOST_DIR)/tmp-terraform/terraform.zip -d $(TOOLS_HOST_DIR)/tmp-terraform
 	@mv $(TOOLS_HOST_DIR)/tmp-terraform/terraform $(TERRAFORM)
 	@rm -fr $(TOOLS_HOST_DIR)/tmp-terraform
-	@$(OK) installing terraform $(HOSTOS)-$(HOSTARCH)
+	@echo "terraform $(HOSTOS)-$(HOSTARCH) installé"
+
 
 $(TERRAFORM_PROVIDER_SCHEMA): $(TERRAFORM)
-	@$(INFO) generating provider schema for $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)
+	@echo "génération du schéma provider pour $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)"
 	@mkdir -p $(TERRAFORM_WORKDIR)
 	@echo '{"terraform":[{"required_providers":[{"provider":{"source":"'"$(TERRAFORM_PROVIDER_SOURCE)"'","version":"'"$(TERRAFORM_PROVIDER_VERSION)"'"}}],"required_version":"'"$(TERRAFORM_VERSION)"'"}]}' > $(TERRAFORM_WORKDIR)/main.tf.json
 	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) init > $(TERRAFORM_WORKDIR)/terraform-logs.txt 2>&1
 	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) providers schema -json=true > $(TERRAFORM_PROVIDER_SCHEMA) 2>> $(TERRAFORM_WORKDIR)/terraform-logs.txt
-	@$(OK) generating provider schema for $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)
+	@echo "schéma provider généré pour $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)"
 
 pull-docs:
 	@if [ ! -d "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" ]; then \

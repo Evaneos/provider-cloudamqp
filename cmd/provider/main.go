@@ -35,7 +35,8 @@ import (
 	"github.com/evaneos/provider-cloudamqp/apis/v1alpha1"
 	"github.com/evaneos/provider-cloudamqp/config"
 	"github.com/evaneos/provider-cloudamqp/internal/clients"
-	"github.com/evaneos/provider-cloudamqp/internal/controller"
+	clustercontroller "github.com/evaneos/provider-cloudamqp/internal/controller/cluster"
+	namespacedcontroller "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced"
 	"github.com/evaneos/provider-cloudamqp/internal/features"
 )
 
@@ -148,6 +149,8 @@ func main() {
 		log.Info("Beta feature enabled", "flag", features.EnableBetaManagementPolicies)
 	}
 
-	kingpin.FatalIfError(controller.Setup(mgr, o), "Cannot setup CloudAMQP controllers")
+	// Enregistrement explicite des controllers cluster et namespaced (Upjet v2)
+	kingpin.FatalIfError(clustercontroller.Setup(mgr, o), "Cannot setup CloudAMQP cluster-scoped controllers")
+	kingpin.FatalIfError(namespacedcontroller.Setup(mgr, o), "Cannot setup CloudAMQP namespaced controllers")
 	kingpin.FatalIfError(mgr.Start(ctrl.SetupSignalHandler()), "Cannot start controller manager")
 }

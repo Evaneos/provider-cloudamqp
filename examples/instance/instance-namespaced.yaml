@@ -1,0 +1,12 @@
+apiVersion: cloudamqp.m.evaneos.com/v1alpha1
+kind: Instance
+metadata:
+  name: cloudamqp-instance
+  namespace: default
+spec:
+  forProvider:
+    name: test
+    plan: lemur
+    region: google-compute-engine::europe-west1
+  providerConfigRef:
+    name: default

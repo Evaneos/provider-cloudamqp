@@ -58,3 +58,14 @@ make build
 
 For filing bugs, suggesting improvements, or requesting new features, please
 open an [issue](https://github.com/evaneos/provider-cloudamqp/issues).
+
+## Upjet v2 : Structure multi-scope (Cluster/Namespaced)
+
+Ce provider est compatible Upjet v2 et Crossplane v2 :
+- Les ressources sont disponibles en deux scopes : cluster (`cloudamqp.evaneos.com`) et namespaced (`cloudamqp.m.evaneos.com`).
+- Les CRDs générés sont présents dans `package/crds/` pour chaque scope.
+- Les exemples YAML sont fournis pour les deux scopes (voir dossier `examples/`).
+- Pour utiliser les ressources namespaced, appliquez les CRDs `cloudamqp.m.evaneos.com_*` et utilisez le champ `metadata.namespace` dans vos manifests.
+
+Pour plus de détails sur la migration et la structure, voir `upgrade-resume.md` et la documentation officielle :
+https://github.com/crossplane/upjet/blob/main/docs/upjet-v2-upgrade.md

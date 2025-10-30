@@ -251,10 +251,10 @@ spec:
                           - It is up to Secret Store implementation for others store types.
                         type: object
                       type:
+                        $ref: '#/definitions/k8s.io~1api~1core~1v1~0SecretType'
                         description: |-
                           Type is the SecretType for the connection secret.
                           - Only valid for Kubernetes Secret Stores.
-                        type: string
                     type: object
                   name:
                     description: Name is the name of the connection secret.
@@ -357,9 +357,9 @@ spec:
                         one status to another.
                       type: string
                     status:
+                      $ref: '#/definitions/k8s.io~1api~1core~1v1~0ConditionStatus'
                       description: Status of this condition; is it currently True,
                         False, or Unknown?
-                      type: string
                     type:
                       description: |-
                         Type of this condition. At most one of each condition type may apply to
