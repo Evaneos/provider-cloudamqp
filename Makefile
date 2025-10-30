@@ -203,7 +203,7 @@ local-deploy: build controlplane.up local.xpkg.deploy.provider.$(PROJECT_NAME)
 
 e2e: local-deploy uptest
 
-crddiff: $(UPTEST)
+crddiff: $(CROSSPLANE_CLI)
 	@$(INFO) Checking breaking CRD schema changes
 	@for crd in $${MODIFIED_CRD_LIST}; do \
 		if ! git cat-file -e "$${GITHUB_BASE_REF}:$${crd}" 2>/dev/null; then \
@@ -245,6 +245,8 @@ endef
 # The reason CROSSPLANE_MAKE_HELP is used instead of CROSSPLANE_HELP is because the crossplane
 # binary will try to use CROSSPLANE_HELP if it is set, and this is for something different.
 export CROSSPLANE_MAKE_HELP
+
+cli: $(CROSSPLANE_CLI)
 
 crossplane.help:
 	@echo "$$CROSSPLANE_MAKE_HELP"
