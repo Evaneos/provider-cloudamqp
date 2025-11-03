@@ -59,7 +59,6 @@ func GetProvider() *ujconfig.Provider {
 	return pc
 }
 
-
 // GetProviderNamespaced returns provider configuration
 func GetProviderNamespaced() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),

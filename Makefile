@@ -18,6 +18,7 @@ export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/rele
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-cloudamqp_v1.33.0
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
+
 PLATFORMS ?= linux_amd64 linux_arm64
 
 # -include will silently skip missing files, which allows us
@@ -43,8 +44,8 @@ NPROCS ?= 1
 # to half the number of CPU cores.
 GO_TEST_PARALLEL := $(shell echo $$(( $(NPROCS) / 2 )))
 
-GO_REQUIRED_VERSION ?= 1.21
-GOLANGCILINT_VERSION ?= 1.54.0
+GO_REQUIRED_VERSION ?= 1.24
+GOLANGCILINT_VERSION ?= 2.4.0
 GO_STATIC_PACKAGES = $(GO_PROJECT)/cmd/provider $(GO_PROJECT)/cmd/generator
 GO_LDFLAGS += -X $(GO_PROJECT)/internal/version.Version=$(VERSION)
 GO_SUBDIRS += cmd internal apis
@@ -56,24 +57,24 @@ GO_SUBDIRS += cmd internal apis
 KIND_VERSION = v0.30.0
 UP_VERSION = v0.41.0
 UP_CHANNEL = stable
-UPTEST_VERSION = v0.5.0
+UPTEST_VERSION = v2.1.0
+CRDDIFF_VERSION = v0.12.1
 -include build/makelib/k8s_tools.mk
 
 # ====================================================================================
 # Setup Images
 
-REGISTRY_ORGS ?= xpkg.upbound.io/upbound
+REGISTRY_ORGS ?= ghcr.io/crossplane-contrib
 IMAGES = $(PROJECT_NAME)
 -include build/makelib/imagelight.mk
 
 # ====================================================================================
 # Setup XPKG
 
-# XPKG_REG_ORGS ?= ghcr.io/evaneos
-XPKG_REG_ORGS ?= evaneos
-# NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
+XPKG_REG_ORGS ?= ghcr.io/evaneos
+# NOTE(hasheddan): skip promoting on xpkg.crossplane.io as channel tags are
 # inferred.
-XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/upbound
+XPKG_REG_ORGS_NO_PROMOTE ?= ghcr.io/evaneos
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
@@ -97,7 +98,7 @@ xpkg.build.provider-cloudamqp: do.build.images
 
 # NOTE(hasheddan): we ensure up is installed prior to running platform-specific
 # build steps in parallel to avoid encountering an installation race condition.
-build.init: $(UP) check-terraform-version
+build.init: $(UP) $(CROSSPLANE_CLI) check-terraform-version
 
 # ====================================================================================
 # Setup Terraform for fetching provider schema
@@ -151,6 +152,7 @@ go.cachedir:
 
 go.mod.cachedir:
 	@go env GOMODCACHE
+
 # Generate a coverage report for cobertura applying exclusions on
 # - generated file
 cobertura:
@@ -169,18 +171,19 @@ submodules:
 run: go.build
 	@$(INFO) Running Crossplane locally out-of-cluster . . .
 	@# To see other arguments that can be provided, run the command with --help instead
-	UPBOUND_CONTEXT="local" $(GO_OUT_DIR)/provider --debug
+	$(GO_OUT_DIR)/provider --debug
 
 # ====================================================================================
 # End to End Testing
 CROSSPLANE_VERSION = 2.0.2
-CROSSPLANE_NAMESPACE = upbound-system
+CROSSPLANE_CLI_VERSION = v2.0.2
+CROSSPLANE_NAMESPACE = crossplane-system
 -include build/makelib/local.xpkg.mk
 -include build/makelib/controlplane.mk
 
 # This target requires the following environment variables to be set:
 # - UPTEST_EXAMPLE_LIST, a comma-separated list of examples to test
-#   To ensure the proper functioning of the end-to-end test resource pre-deletion hook, it is crucial to arrange your resources appropriately. 
+#   To ensure the proper functioning of the end-to-end test resource pre-deletion hook, it is crucial to arrange your resources appropriately.
 #   You can check the basic implementation here: https://github.com/crossplane/uptest/blob/main/internal/templates/03-delete.yaml.tmpl.
 # - UPTEST_CLOUD_CREDENTIALS (optional), multiple sets of AWS IAM User credentials specified as key=value pairs.
 #   The support keys are currently `DEFAULT` and `PEER`. So, an example for the value of this env. variable is:
@@ -192,20 +195,20 @@ CROSSPLANE_NAMESPACE = upbound-system
 #   aws_secret_access_key = REDACTED'
 #   The associated `ProviderConfig`s will be named as `default` and `peer`.
 # - UPTEST_DATASOURCE_PATH (optional), please see https://github.com/crossplane/uptest#injecting-dynamic-values-and-datasource
-uptest: $(UPTEST) $(KUBECTL) $(KUTTL)
+uptest: $(UPTEST) $(KUBECTL) $(CHAINSAW) $(CROSSPLANE_CLI)
 	@$(INFO) running automated tests
-	@KUBECTL=$(KUBECTL) KUTTL=$(KUTTL) $(UPTEST) e2e "${UPTEST_EXAMPLE_LIST}" --data-source="${UPTEST_DATASOURCE_PATH}" --setup-script=cluster/test/setup.sh --default-conditions="Test" || $(FAIL)
+	@KUBECTL=$(KUBECTL) CHAINSAW=$(CHAINSAW) CROSSPLANE_CLI=$(CROSSPLANE_CLI) CROSSPLANE_NAMESPACE=$(CROSSPLANE_NAMESPACE) $(UPTEST) e2e "${UPTEST_EXAMPLE_LIST}" --data-source="${UPTEST_DATASOURCE_PATH}" --setup-script=cluster/test/setup.sh --default-conditions="Test" || $(FAIL)
 	@$(OK) running automated tests
 
 local-deploy: build controlplane.up local.xpkg.deploy.provider.$(PROJECT_NAME)
 	@$(INFO) running locally built provider
 	@$(KUBECTL) wait provider.pkg $(PROJECT_NAME) --for condition=Healthy --timeout 5m
-	@$(KUBECTL) -n upbound-system wait --for=condition=Available deployment --all --timeout=5m
+	@$(KUBECTL) -n crossplane-system wait --for=condition=Available deployment --all --timeout=5m
 	@$(OK) running locally built provider
 
 e2e: local-deploy uptest
 
-crddiff: $(CROSSPLANE_CLI)
+crddiff: $(UPTEST)
 	@$(INFO) Checking breaking CRD schema changes
 	@for crd in $${MODIFIED_CRD_LIST}; do \
 		if ! git cat-file -e "$${GITHUB_BASE_REF}:$${crd}" 2>/dev/null; then \
@@ -213,7 +216,7 @@ crddiff: $(CROSSPLANE_CLI)
 			continue ; \
 		fi ; \
 		echo "Checking $${crd} for breaking API changes..." ; \
-		changes_detected=$$($(UPTEST) crddiff revision <(git cat-file -p "$${GITHUB_BASE_REF}:$${crd}") "$${crd}" 2>&1) ; \
+		changes_detected=$$(go run github.com/crossplane/uptest/cmd/crddiff@$(CRDDIFF_VERSION) revision --enable-upjet-extensions <(git cat-file -p "$${GITHUB_BASE_REF}:$${crd}") "$${crd}" 2>&1) ; \
 		if [[ $$? != 0 ]] ; then \
 			printf "\033[31m"; echo "Breaking change detected!"; printf "\033[0m" ; \
 			echo "$${changes_detected}" ; \
@@ -247,8 +250,6 @@ endef
 # The reason CROSSPLANE_MAKE_HELP is used instead of CROSSPLANE_HELP is because the crossplane
 # binary will try to use CROSSPLANE_HELP if it is set, and this is for something different.
 export CROSSPLANE_MAKE_HELP
-
-cli: $(CROSSPLANE_CLI)
 
 crossplane.help:
 	@echo "$$CROSSPLANE_MAKE_HELP"

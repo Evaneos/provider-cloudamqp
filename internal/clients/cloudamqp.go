@@ -26,9 +26,6 @@ const (
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
 	errUnmarshalCredentials = "cannot unmarshal cloudamqp credentials as JSON"
-
-	// configuration
-	apikey = "apikey"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
