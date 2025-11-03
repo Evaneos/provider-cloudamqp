@@ -1,7 +1,7 @@
 # Provider CloudAMQP
 
 `provider-cloudamqp` is a [Crossplane](https://crossplane.io/) provider that
-is built using [Upjet](https://github.com/crossplane/upjet) code
+is built using [Upjet](https://github.com/crossplane/upjet/v2) code
 generation tools and exposes XRM-conformant managed resources for the
 CloudAMQP API.
 

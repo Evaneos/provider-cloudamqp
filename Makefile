@@ -53,8 +53,8 @@ GO_SUBDIRS += cmd internal apis
 # ====================================================================================
 # Setup Kubernetes tools
 
-KIND_VERSION = v0.15.0
-UP_VERSION = v0.28.0
+KIND_VERSION = v0.30.0
+UP_VERSION = v0.41.0
 UP_CHANNEL = stable
 UPTEST_VERSION = v0.5.0
 -include build/makelib/k8s_tools.mk
@@ -171,7 +171,7 @@ run: go.build
 
 # ====================================================================================
 # End to End Testing
-CROSSPLANE_VERSION = 1.16.0
+CROSSPLANE_VERSION = 2.0.2
 CROSSPLANE_NAMESPACE = upbound-system
 -include build/makelib/local.xpkg.mk
 -include build/makelib/controlplane.mk
@@ -203,7 +203,7 @@ local-deploy: build controlplane.up local.xpkg.deploy.provider.$(PROJECT_NAME)
 
 e2e: local-deploy uptest
 
-crddiff: $(UPTEST)
+crddiff: $(CROSSPLANE_CLI)
 	@$(INFO) Checking breaking CRD schema changes
 	@for crd in $${MODIFIED_CRD_LIST}; do \
 		if ! git cat-file -e "$${GITHUB_BASE_REF}:$${crd}" 2>/dev/null; then \
@@ -245,6 +245,8 @@ endef
 # The reason CROSSPLANE_MAKE_HELP is used instead of CROSSPLANE_HELP is because the crossplane
 # binary will try to use CROSSPLANE_HELP if it is set, and this is for something different.
 export CROSSPLANE_MAKE_HELP
+
+cli: $(CROSSPLANE_CLI)
 
 crossplane.help:
 	@echo "$$CROSSPLANE_MAKE_HELP"
