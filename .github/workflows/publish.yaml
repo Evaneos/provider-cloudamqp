@@ -18,6 +18,7 @@ jobs:
     with:
       repository: provider-cloudamqp
       registry_org: evaneos
+      mirror: false
       version: ${{ github.event.inputs.version }}
       go-version: ${{ github.event.inputs.go-version }}
       cleanup-disk: false
