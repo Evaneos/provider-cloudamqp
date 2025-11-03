@@ -26,6 +26,9 @@ const (
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
 	errUnmarshalCredentials = "cannot unmarshal cloudamqp credentials as JSON"
+
+	// configuration
+	apikey = "apikey"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
@@ -55,10 +58,10 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		}
 
 		// Set credentials in Terraform provider configuration.
-		/*ps.Configuration = map[string]any{
-			"username": creds["username"],
-			"password": creds["password"],
-		}*/
+		ps.Configuration = map[string]any{}
+		if v, ok := creds[apikey]; ok {
+			ps.Configuration[apikey] = v
+		}
 		return ps, nil
 	}
 }
