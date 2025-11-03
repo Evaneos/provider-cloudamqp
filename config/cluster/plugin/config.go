@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	errFmtNoAttribute    = "Attribute %s not found"
-	errFmtUnexpectedType = "Attribute %s is of an unexpected type"
+	errFmtNoAttribute    = "attribute %s not found"
+	errFmtUnexpectedType = "attribute %s is of an unexpected type"
 )
 
 func getNameFromFullyQualifiedID(tfstate map[string]any) (string, error) {
