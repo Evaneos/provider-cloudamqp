@@ -1,7 +1,7 @@
 name: Tag
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       version:
         description: 'Release version (e.g. v0.1.0)'
@@ -11,8 +11,16 @@ on:
         required: true
 
 jobs:
-  tag:
-    uses: crossplane-contrib/provider-workflows/.github/workflows/tag.yml@main
-    with:
-      version: ${{ github.event.inputs.version }}
-      message: ${{ github.event.inputs.message }}
+  create-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Tag
+        uses: negz/create-tag@v1
+        with:
+          version: ${{ github.event.inputs.version }}
+          message: ${{ github.event.inputs.message }}
+          token: ${{ secrets.GITHUB_TOKEN }}
