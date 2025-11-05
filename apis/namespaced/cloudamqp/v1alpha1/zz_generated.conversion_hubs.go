@@ -16,6 +16,9 @@ func (tr *Firewall) Hub() {}
 func (tr *Instance) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *Log) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *MaintenanceWindow) Hub() {}
 
 // Hub marks this type as a conversion hub.

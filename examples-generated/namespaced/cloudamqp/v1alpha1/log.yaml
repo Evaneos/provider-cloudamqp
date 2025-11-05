@@ -1,0 +1,23 @@
+apiVersion: cloudamqp.m.evaneos.com/v1alpha1
+kind: Log
+metadata:
+  annotations:
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/log
+  labels:
+    testing.upbound.io/example-name: azure_monitor
+  name: azure-monitor
+  namespace: upbound-system
+spec:
+  forProvider:
+    applicationId: ${var.azm_application_id}
+    applicationSecretSecretRef:
+      key: example-key
+      name: example-secret
+    dceUri: ${var.azm_dce_uri}
+    dcrId: ${var.azm_dcr_id}
+    instanceIdSelector:
+      matchLabels:
+        testing.upbound.io/example-name: instance
+    name: azure_monitor
+    table: ${var.azm_table}
+    tenantId: ${var.azm_tentant_id}

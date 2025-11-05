@@ -1,8 +1,8 @@
 apiVersion: cloudamqp.evaneos.com/v1alpha1
-kind: Metric
+kind: IntegrationMetric
 metadata:
   annotations:
-    meta.upbound.io/example-id: cloudamqp/v1alpha1/metric
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/integrationmetric
   labels:
     testing.upbound.io/example-name: cloudwatch
   name: cloudwatch

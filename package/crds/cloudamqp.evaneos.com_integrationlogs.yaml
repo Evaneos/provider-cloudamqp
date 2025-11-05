@@ -4,7 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: metrics.cloudamqp.evaneos.com
+  name: integrationlogs.cloudamqp.evaneos.com
 spec:
   group: cloudamqp.evaneos.com
   names:
@@ -12,10 +12,10 @@ spec:
     - crossplane
     - managed
     - cloudamqp
-    kind: Metric
-    listKind: MetricList
-    plural: metrics
-    singular: metric
+    kind: IntegrationLog
+    listKind: IntegrationLogList
+    plural: integrationlogs
+    singular: integrationlog
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Metric is the Schema for the Metrics API. Creates and manages
-          third party metrics integration for a CloudAMQP instance.
+        description: IntegrationLog is the Schema for the IntegrationLogs API. Creates
+          and manages third party log integration for a CloudAMQP instance.
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: MetricSpec defines the desired state of Metric
+            description: IntegrationLogSpec defines the desired state of IntegrationLog
             properties:
               deletionPolicy:
                 default: Delete
@@ -73,15 +73,58 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  accessKeyId:
+                  accessKeyIdSecretRef:
                     description: |-
                       AWS access key identifier.
                       AWS access key identifier. (Cloudwatch)
-                    type: string
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   apiKeySecretRef:
                     description: |-
-                      The API key for the integration service.
-                      The API key for the integration service. (Librato, Data Dog, New Relic)
+                      The API key.
+                      The API key for the integration service. (Datadog)
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  application:
+                    description: |-
+                      The application name for Coralogix.
+                      The name of the application. (Azure Monitor)
+                    type: string
+                  applicationId:
+                    description: |-
+                      The application identifier.
+                      The application ID. (Azure Monitor)
+                    type: string
+                  applicationSecretSecretRef:
+                    description: |-
+                      The application secret.
+                      The application secret. (Azure Monitor)
                     properties:
                       key:
                         description: The key to select.
@@ -121,29 +164,35 @@ spec:
                     - name
                     - namespace
                     type: object
-                  email:
+                  dceUri:
                     description: |-
-                      The email address registred for the integration service.
-                      The email address registred for the integration service. (Librato)
+                      The data collection endpoint.
+                      The DCE URI. (Coralogix)
                     type: string
-                  iamExternalId:
+                  dcrId:
                     description: |-
-                      External identifier that match the role you created.
-                      External identifier that match the role you created. (Cloudwatch)
+                      ID of data collection rule that your DCE is linked to.
+                      The DCR ID. (Coralogix)
                     type: string
-                  iamRole:
+                  endpoint:
                     description: |-
-                      The ARN of the role to be assumed when publishing metrics.
-                      The ARN of the role to be assumed when publishing metrics. (Cloudwatch)
+                      The syslog destination to send the logs to for Coralogix.
+                      The syslog destination to send the logs to. (Papertrail)
                     type: string
-                  includeAdQueues:
+                  host:
                     description: |-
-                      Include auto delete queues.
-                      (optional) Include Auto-Delete queues
-                    type: boolean
+                      The host for Scalyr integration. Valid hosts app.scalyr.com and
+                      app.eu.scalyr.com
+                      The host information. (Scalyr)
+                    type: string
+                  hostPort:
+                    description: |-
+                      Destination to send the logs.
+                      Destination to send the logs. (Splunk)
+                    type: string
                   instanceId:
                     description: |-
-                      The identifier for this resource.
+                      Instance identifier for the CloudAMQP instance.
                       Instance identifier
                     type: number
                   instanceIdRef:
@@ -224,13 +273,12 @@ spec:
                     type: object
                   name:
                     description: |-
-                      The name of the third party log integration. See
-                      Integration service reference
+                      The name of the third party log integration (azure_monitoring).
                       The name of log integration
                     type: string
                   privateKeyIdSecretRef:
                     description: |-
-                      The identifier for this resource.
+                      The identifier for this resource
                       Private key identifier. (Stackdriver)
                     properties:
                       key:
@@ -250,7 +298,7 @@ spec:
                   privateKeySecretRef:
                     description: |-
                       The private access key.
-                      The private key. (Stackdriver)
+                      The private API key used for authentication. (Stackdriver, Coralogix)
                     properties:
                       key:
                         description: The key to select.
@@ -269,23 +317,22 @@ spec:
                   projectId:
                     description: |-
                       The project identifier.
-                      Project ID. (Stackdriver)
-                    type: string
-                  queueAllowlist:
-                    description: |-
-                      Allowlist queues using regular expression. Leave empty to include
-                      all queues.
-                      (optional) allowlist using regular expression
+                      The project ID for the integration service. (Stackdriver)
                     type: string
                   region:
                     description: |-
-                      Region hosting the integration service.
-                      AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
+                      AWS region hosting the integration service.
+                      The region hosting integration service. (Cloudwatch, Datadog)
                     type: string
+                  retention:
+                    description: |-
+                      Number of days to retain log events in CloudAMQP log group.
+                      The number of days to retain logs. (Cloudwatch)
+                    type: number
                   secretAccessKeySecretRef:
                     description: |-
                       AWS secret access key.
-                      AWS secret key. (Cloudwatch)
+                      AWS secret access key. (Cloudwatch)
                     properties:
                       key:
                         description: The key to select.
@@ -301,16 +348,54 @@ spec:
                     - name
                     - namespace
                     type: object
+                  sourcetype:
+                    description: |-
+                      Assign source type to the data exported, eg. generic_single_line.
+                      Assign source type to the data exported, eg. generic_single_line. (Splunk)
+                    type: string
+                  subsystem:
+                    description: |-
+                      The subsystem name for Coralogix.
+                      The name of the subsystem. (Azure Monitor)
+                    type: string
+                  table:
+                    description: |-
+                      The table name.
+                      The table name to send the logs to. (Azure Monitor)
+                    type: string
                   tags:
                     description: |-
-                      Tags. e.g. env=prod,region=europe.
-                      (optional) tags. E.g. env=prod,region=europe
+                      Enter tags to CloudAMQP log group like this: Project=A,Environment=Development.
+                      Optional tags. E.g. env=prod,region=europe. (Cloudwatch, Datadog)
                     type: string
-                  vhostAllowlist:
+                  tenantId:
                     description: |-
-                      Allowlist vhost using regular expression. Leave empty to include
-                      all vhosts.
-                      (optional) allowlist using regular expression
+                      The tenant identifier.
+                      The tenant ID. (Azure Monitor)
+                    type: string
+                  tokenSecretRef:
+                    description: |-
+                      Token used for authentication.
+                      The token used for authentication. (Loggly, Logentries, Splunk, Scalyr)
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  url:
+                    description: |-
+                      Endpoint to log integration.
+                      The URL to push the logs to. (Papertrail)
                     type: string
                 type: object
               initProvider:
@@ -326,15 +411,58 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  accessKeyId:
+                  accessKeyIdSecretRef:
                     description: |-
                       AWS access key identifier.
                       AWS access key identifier. (Cloudwatch)
-                    type: string
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   apiKeySecretRef:
                     description: |-
-                      The API key for the integration service.
-                      The API key for the integration service. (Librato, Data Dog, New Relic)
+                      The API key.
+                      The API key for the integration service. (Datadog)
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  application:
+                    description: |-
+                      The application name for Coralogix.
+                      The name of the application. (Azure Monitor)
+                    type: string
+                  applicationId:
+                    description: |-
+                      The application identifier.
+                      The application ID. (Azure Monitor)
+                    type: string
+                  applicationSecretSecretRef:
+                    description: |-
+                      The application secret.
+                      The application secret. (Azure Monitor)
                     properties:
                       key:
                         description: The key to select.
@@ -374,29 +502,35 @@ spec:
                     - name
                     - namespace
                     type: object
-                  email:
+                  dceUri:
                     description: |-
-                      The email address registred for the integration service.
-                      The email address registred for the integration service. (Librato)
+                      The data collection endpoint.
+                      The DCE URI. (Coralogix)
                     type: string
-                  iamExternalId:
+                  dcrId:
                     description: |-
-                      External identifier that match the role you created.
-                      External identifier that match the role you created. (Cloudwatch)
+                      ID of data collection rule that your DCE is linked to.
+                      The DCR ID. (Coralogix)
                     type: string
-                  iamRole:
+                  endpoint:
                     description: |-
-                      The ARN of the role to be assumed when publishing metrics.
-                      The ARN of the role to be assumed when publishing metrics. (Cloudwatch)
+                      The syslog destination to send the logs to for Coralogix.
+                      The syslog destination to send the logs to. (Papertrail)
                     type: string
-                  includeAdQueues:
+                  host:
                     description: |-
-                      Include auto delete queues.
-                      (optional) Include Auto-Delete queues
-                    type: boolean
+                      The host for Scalyr integration. Valid hosts app.scalyr.com and
+                      app.eu.scalyr.com
+                      The host information. (Scalyr)
+                    type: string
+                  hostPort:
+                    description: |-
+                      Destination to send the logs.
+                      Destination to send the logs. (Splunk)
+                    type: string
                   instanceId:
                     description: |-
-                      The identifier for this resource.
+                      Instance identifier for the CloudAMQP instance.
                       Instance identifier
                     type: number
                   instanceIdRef:
@@ -477,13 +611,12 @@ spec:
                     type: object
                   name:
                     description: |-
-                      The name of the third party log integration. See
-                      Integration service reference
+                      The name of the third party log integration (azure_monitoring).
                       The name of log integration
                     type: string
                   privateKeyIdSecretRef:
                     description: |-
-                      The identifier for this resource.
+                      The identifier for this resource
                       Private key identifier. (Stackdriver)
                     properties:
                       key:
@@ -503,7 +636,7 @@ spec:
                   privateKeySecretRef:
                     description: |-
                       The private access key.
-                      The private key. (Stackdriver)
+                      The private API key used for authentication. (Stackdriver, Coralogix)
                     properties:
                       key:
                         description: The key to select.
@@ -522,23 +655,22 @@ spec:
                   projectId:
                     description: |-
                       The project identifier.
-                      Project ID. (Stackdriver)
-                    type: string
-                  queueAllowlist:
-                    description: |-
-                      Allowlist queues using regular expression. Leave empty to include
-                      all queues.
-                      (optional) allowlist using regular expression
+                      The project ID for the integration service. (Stackdriver)
                     type: string
                   region:
                     description: |-
-                      Region hosting the integration service.
-                      AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
+                      AWS region hosting the integration service.
+                      The region hosting integration service. (Cloudwatch, Datadog)
                     type: string
+                  retention:
+                    description: |-
+                      Number of days to retain log events in CloudAMQP log group.
+                      The number of days to retain logs. (Cloudwatch)
+                    type: number
                   secretAccessKeySecretRef:
                     description: |-
                       AWS secret access key.
-                      AWS secret key. (Cloudwatch)
+                      AWS secret access key. (Cloudwatch)
                     properties:
                       key:
                         description: The key to select.
@@ -554,16 +686,54 @@ spec:
                     - name
                     - namespace
                     type: object
+                  sourcetype:
+                    description: |-
+                      Assign source type to the data exported, eg. generic_single_line.
+                      Assign source type to the data exported, eg. generic_single_line. (Splunk)
+                    type: string
+                  subsystem:
+                    description: |-
+                      The subsystem name for Coralogix.
+                      The name of the subsystem. (Azure Monitor)
+                    type: string
+                  table:
+                    description: |-
+                      The table name.
+                      The table name to send the logs to. (Azure Monitor)
+                    type: string
                   tags:
                     description: |-
-                      Tags. e.g. env=prod,region=europe.
-                      (optional) tags. E.g. env=prod,region=europe
+                      Enter tags to CloudAMQP log group like this: Project=A,Environment=Development.
+                      Optional tags. E.g. env=prod,region=europe. (Cloudwatch, Datadog)
                     type: string
-                  vhostAllowlist:
+                  tenantId:
                     description: |-
-                      Allowlist vhost using regular expression. Leave empty to include
-                      all vhosts.
-                      (optional) allowlist using regular expression
+                      The tenant identifier.
+                      The tenant ID. (Azure Monitor)
+                    type: string
+                  tokenSecretRef:
+                    description: |-
+                      Token used for authentication.
+                      The token used for authentication. (Loggly, Logentries, Splunk, Scalyr)
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  url:
+                    description: |-
+                      Endpoint to log integration.
+                      The URL to push the logs to. (Papertrail)
                     type: string
                 type: object
               managementPolicies:
@@ -658,80 +828,108 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: MetricStatus defines the observed state of Metric.
+            description: IntegrationLogStatus defines the observed state of IntegrationLog.
             properties:
               atProvider:
                 properties:
-                  accessKeyId:
+                  application:
                     description: |-
-                      AWS access key identifier.
-                      AWS access key identifier. (Cloudwatch)
+                      The application name for Coralogix.
+                      The name of the application. (Azure Monitor)
+                    type: string
+                  applicationId:
+                    description: |-
+                      The application identifier.
+                      The application ID. (Azure Monitor)
                     type: string
                   clientEmail:
                     description: |-
                       The client email registered for the integration service.
                       The client email. (Stackdriver)
                     type: string
-                  email:
+                  dceUri:
                     description: |-
-                      The email address registred for the integration service.
-                      The email address registred for the integration service. (Librato)
+                      The data collection endpoint.
+                      The DCE URI. (Coralogix)
                     type: string
-                  iamExternalId:
+                  dcrId:
                     description: |-
-                      External identifier that match the role you created.
-                      External identifier that match the role you created. (Cloudwatch)
+                      ID of data collection rule that your DCE is linked to.
+                      The DCR ID. (Coralogix)
                     type: string
-                  iamRole:
+                  endpoint:
                     description: |-
-                      The ARN of the role to be assumed when publishing metrics.
-                      The ARN of the role to be assumed when publishing metrics. (Cloudwatch)
+                      The syslog destination to send the logs to for Coralogix.
+                      The syslog destination to send the logs to. (Papertrail)
+                    type: string
+                  host:
+                    description: |-
+                      The host for Scalyr integration. Valid hosts app.scalyr.com and
+                      app.eu.scalyr.com
+                      The host information. (Scalyr)
+                    type: string
+                  hostPort:
+                    description: |-
+                      Destination to send the logs.
+                      Destination to send the logs. (Splunk)
                     type: string
                   id:
-                    description: The identifier for this resource.
+                    description: The identifier for this resource
                     type: string
-                  includeAdQueues:
-                    description: |-
-                      Include auto delete queues.
-                      (optional) Include Auto-Delete queues
-                    type: boolean
                   instanceId:
                     description: |-
-                      The identifier for this resource.
+                      Instance identifier for the CloudAMQP instance.
                       Instance identifier
                     type: number
                   name:
                     description: |-
-                      The name of the third party log integration. See
-                      Integration service reference
+                      The name of the third party log integration (azure_monitoring).
                       The name of log integration
                     type: string
                   projectId:
                     description: |-
                       The project identifier.
-                      Project ID. (Stackdriver)
-                    type: string
-                  queueAllowlist:
-                    description: |-
-                      Allowlist queues using regular expression. Leave empty to include
-                      all queues.
-                      (optional) allowlist using regular expression
+                      The project ID for the integration service. (Stackdriver)
                     type: string
                   region:
                     description: |-
-                      Region hosting the integration service.
-                      AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
+                      AWS region hosting the integration service.
+                      The region hosting integration service. (Cloudwatch, Datadog)
+                    type: string
+                  retention:
+                    description: |-
+                      Number of days to retain log events in CloudAMQP log group.
+                      The number of days to retain logs. (Cloudwatch)
+                    type: number
+                  sourcetype:
+                    description: |-
+                      Assign source type to the data exported, eg. generic_single_line.
+                      Assign source type to the data exported, eg. generic_single_line. (Splunk)
+                    type: string
+                  subsystem:
+                    description: |-
+                      The subsystem name for Coralogix.
+                      The name of the subsystem. (Azure Monitor)
+                    type: string
+                  table:
+                    description: |-
+                      The table name.
+                      The table name to send the logs to. (Azure Monitor)
                     type: string
                   tags:
                     description: |-
-                      Tags. e.g. env=prod,region=europe.
-                      (optional) tags. E.g. env=prod,region=europe
+                      Enter tags to CloudAMQP log group like this: Project=A,Environment=Development.
+                      Optional tags. E.g. env=prod,region=europe. (Cloudwatch, Datadog)
                     type: string
-                  vhostAllowlist:
+                  tenantId:
                     description: |-
-                      Allowlist vhost using regular expression. Leave empty to include
-                      all vhosts.
-                      (optional) allowlist using regular expression
+                      The tenant identifier.
+                      The tenant ID. (Azure Monitor)
+                    type: string
+                  url:
+                    description: |-
+                      Endpoint to log integration.
+                      The URL to push the logs to. (Papertrail)
                     type: string
                 type: object
               conditions:

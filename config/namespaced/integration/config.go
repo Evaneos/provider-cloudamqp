@@ -12,6 +12,14 @@ func Configure(p *config.Provider) {
 		}
 	})
 
+	p.AddResourceConfigurator("cloudamqp_integration_log", func(r *config.Resource) {
+		r.ShortGroup = "cloudamqp"
+
+		r.References["instance_id"] = config.Reference{
+			TerraformName: "cloudamqp_instance",
+		}
+	})
+
 	p.AddResourceConfigurator("cloudamqp_integration_metric_prometheus", func(r *config.Resource) {
 		r.ShortGroup = "cloudamqp"
 		r.Kind = "Prometheus"

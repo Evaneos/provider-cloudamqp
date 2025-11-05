@@ -13,7 +13,7 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 )
 
-type MetricInitParameters struct {
+type IntegrationMetricInitParameters struct {
 
 	// The API key for the integration service.
 	// The API key for the integration service. (Librato, Data Dog, New Relic)
@@ -100,7 +100,7 @@ type MetricInitParameters struct {
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
 }
 
-type MetricObservation struct {
+type IntegrationMetricObservation struct {
 
 	// AWS access key identifier.
 	// AWS access key identifier. (Cloudwatch)
@@ -161,7 +161,7 @@ type MetricObservation struct {
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
 }
 
-type MetricParameters struct {
+type IntegrationMetricParameters struct {
 
 	// The API key for the integration service.
 	// The API key for the integration service. (Librato, Data Dog, New Relic)
@@ -266,10 +266,10 @@ type MetricParameters struct {
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
 }
 
-// MetricSpec defines the desired state of Metric
-type MetricSpec struct {
+// IntegrationMetricSpec defines the desired state of IntegrationMetric
+type IntegrationMetricSpec struct {
 	v1.ResourceSpec `json:",inline"`
-	ForProvider     MetricParameters `json:"forProvider"`
+	ForProvider     IntegrationMetricParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -280,50 +280,50 @@ type MetricSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider MetricInitParameters `json:"initProvider,omitempty"`
+	InitProvider IntegrationMetricInitParameters `json:"initProvider,omitempty"`
 }
 
-// MetricStatus defines the observed state of Metric.
-type MetricStatus struct {
+// IntegrationMetricStatus defines the observed state of IntegrationMetric.
+type IntegrationMetricStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        MetricObservation `json:"atProvider,omitempty"`
+	AtProvider        IntegrationMetricObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// Metric is the Schema for the Metrics API. Creates and manages third party metrics integration for a CloudAMQP instance.
+// IntegrationMetric is the Schema for the IntegrationMetrics API. Creates and manages third party metrics integration for a CloudAMQP instance.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
-type Metric struct {
+type IntegrationMetric struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
-	Spec   MetricSpec   `json:"spec"`
-	Status MetricStatus `json:"status,omitempty"`
+	Spec   IntegrationMetricSpec   `json:"spec"`
+	Status IntegrationMetricStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// MetricList contains a list of Metrics
-type MetricList struct {
+// IntegrationMetricList contains a list of IntegrationMetrics
+type IntegrationMetricList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Metric `json:"items"`
+	Items           []IntegrationMetric `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	Metric_Kind             = "Metric"
-	Metric_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: Metric_Kind}.String()
-	Metric_KindAPIVersion   = Metric_Kind + "." + CRDGroupVersion.String()
-	Metric_GroupVersionKind = CRDGroupVersion.WithKind(Metric_Kind)
+	IntegrationMetric_Kind             = "IntegrationMetric"
+	IntegrationMetric_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: IntegrationMetric_Kind}.String()
+	IntegrationMetric_KindAPIVersion   = IntegrationMetric_Kind + "." + CRDGroupVersion.String()
+	IntegrationMetric_GroupVersionKind = CRDGroupVersion.WithKind(IntegrationMetric_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&Metric{}, &MetricList{})
+	SchemeBuilder.Register(&IntegrationMetric{}, &IntegrationMetricList{})
 }

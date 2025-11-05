@@ -191,36 +191,7 @@ type DynatraceParameters struct {
 	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
-type NewrelicV3InitParameters struct {
-
-	// New Relic API key for authentication.
-	APIKeySecretRef v1.SecretKeySelector `json:"apiKeySecretRef" tf:"-"`
-
-	// Additional tags to attach to metrics. Format: key=value,key2=value2.
-	// tags. E.g. env=prod,service=web
-	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
-}
-
-type NewrelicV3Observation struct {
-
-	// Additional tags to attach to metrics. Format: key=value,key2=value2.
-	// tags. E.g. env=prod,service=web
-	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
-}
-
-type NewrelicV3Parameters struct {
-
-	// New Relic API key for authentication.
-	// +kubebuilder:validation:Optional
-	APIKeySecretRef v1.SecretKeySelector `json:"apiKeySecretRef" tf:"-"`
-
-	// Additional tags to attach to metrics. Format: key=value,key2=value2.
-	// tags. E.g. env=prod,service=web
-	// +kubebuilder:validation:Optional
-	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
-}
-
-type PrometheusInitParameters struct {
+type IntegrationPrometheusInitParameters struct {
 	AzureMonitor []AzureMonitorInitParameters `json:"azureMonitor,omitempty" tf:"azure_monitor,omitempty"`
 
 	CloudwatchV3 []CloudwatchV3InitParameters `json:"cloudwatchV3,omitempty" tf:"cloudwatch_v3,omitempty"`
@@ -254,7 +225,7 @@ type PrometheusInitParameters struct {
 	StackdriverV2 []StackdriverV2InitParameters `json:"stackdriverV2,omitempty" tf:"stackdriver_v2,omitempty"`
 }
 
-type PrometheusObservation struct {
+type IntegrationPrometheusObservation struct {
 	AzureMonitor []AzureMonitorParameters `json:"azureMonitor,omitempty" tf:"azure_monitor,omitempty"`
 
 	CloudwatchV3 []CloudwatchV3Observation `json:"cloudwatchV3,omitempty" tf:"cloudwatch_v3,omitempty"`
@@ -282,7 +253,7 @@ type PrometheusObservation struct {
 	StackdriverV2 []StackdriverV2Observation `json:"stackdriverV2,omitempty" tf:"stackdriver_v2,omitempty"`
 }
 
-type PrometheusParameters struct {
+type IntegrationPrometheusParameters struct {
 
 	// +kubebuilder:validation:Optional
 	AzureMonitor []AzureMonitorParameters `json:"azureMonitor,omitempty" tf:"azure_monitor,omitempty"`
@@ -324,6 +295,35 @@ type PrometheusParameters struct {
 
 	// +kubebuilder:validation:Optional
 	StackdriverV2 []StackdriverV2Parameters `json:"stackdriverV2,omitempty" tf:"stackdriver_v2,omitempty"`
+}
+
+type NewrelicV3InitParameters struct {
+
+	// New Relic API key for authentication.
+	APIKeySecretRef v1.SecretKeySelector `json:"apiKeySecretRef" tf:"-"`
+
+	// Additional tags to attach to metrics. Format: key=value,key2=value2.
+	// tags. E.g. env=prod,service=web
+	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type NewrelicV3Observation struct {
+
+	// Additional tags to attach to metrics. Format: key=value,key2=value2.
+	// tags. E.g. env=prod,service=web
+	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type NewrelicV3Parameters struct {
+
+	// New Relic API key for authentication.
+	// +kubebuilder:validation:Optional
+	APIKeySecretRef v1.SecretKeySelector `json:"apiKeySecretRef" tf:"-"`
+
+	// Additional tags to attach to metrics. Format: key=value,key2=value2.
+	// tags. E.g. env=prod,service=web
+	// +kubebuilder:validation:Optional
+	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
 type SplunkV2InitParameters struct {
@@ -409,10 +409,10 @@ type StackdriverV2Parameters struct {
 	Tags *string `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
-// PrometheusSpec defines the desired state of Prometheus
-type PrometheusSpec struct {
+// IntegrationPrometheusSpec defines the desired state of IntegrationPrometheus
+type IntegrationPrometheusSpec struct {
 	v1.ResourceSpec `json:",inline"`
-	ForProvider     PrometheusParameters `json:"forProvider"`
+	ForProvider     IntegrationPrometheusParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -423,49 +423,49 @@ type PrometheusSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider PrometheusInitParameters `json:"initProvider,omitempty"`
+	InitProvider IntegrationPrometheusInitParameters `json:"initProvider,omitempty"`
 }
 
-// PrometheusStatus defines the observed state of Prometheus.
-type PrometheusStatus struct {
+// IntegrationPrometheusStatus defines the observed state of IntegrationPrometheus.
+type IntegrationPrometheusStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        PrometheusObservation `json:"atProvider,omitempty"`
+	AtProvider        IntegrationPrometheusObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// Prometheus is the Schema for the Prometheuss API. Creates and manages third party prometheus metrics integration for a CloudAMQP instance.
+// IntegrationPrometheus is the Schema for the IntegrationPrometheuss API. Creates and manages third party prometheus metrics integration for a CloudAMQP instance.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,cloudamqp}
-type Prometheus struct {
+type IntegrationPrometheus struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              PrometheusSpec   `json:"spec"`
-	Status            PrometheusStatus `json:"status,omitempty"`
+	Spec              IntegrationPrometheusSpec   `json:"spec"`
+	Status            IntegrationPrometheusStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// PrometheusList contains a list of Prometheuss
-type PrometheusList struct {
+// IntegrationPrometheusList contains a list of IntegrationPrometheuss
+type IntegrationPrometheusList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Prometheus `json:"items"`
+	Items           []IntegrationPrometheus `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	Prometheus_Kind             = "Prometheus"
-	Prometheus_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: Prometheus_Kind}.String()
-	Prometheus_KindAPIVersion   = Prometheus_Kind + "." + CRDGroupVersion.String()
-	Prometheus_GroupVersionKind = CRDGroupVersion.WithKind(Prometheus_Kind)
+	IntegrationPrometheus_Kind             = "IntegrationPrometheus"
+	IntegrationPrometheus_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: IntegrationPrometheus_Kind}.String()
+	IntegrationPrometheus_KindAPIVersion   = IntegrationPrometheus_Kind + "." + CRDGroupVersion.String()
+	IntegrationPrometheus_GroupVersionKind = CRDGroupVersion.WithKind(IntegrationPrometheus_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&Prometheus{}, &PrometheusList{})
+	SchemeBuilder.Register(&IntegrationPrometheus{}, &IntegrationPrometheusList{})
 }

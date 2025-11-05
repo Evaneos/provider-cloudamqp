@@ -12,6 +12,7 @@ import (
 	community "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/community"
 	firewall "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/firewall"
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/instance"
+	log "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/log"
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/maintenancewindow"
 	metric "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/metric"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/plugin"
@@ -29,6 +30,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		community.Setup,
 		firewall.Setup,
 		instance.Setup,
+		log.Setup,
 		maintenancewindow.Setup,
 		metric.Setup,
 		plugin.Setup,
@@ -52,6 +54,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		community.SetupGated,
 		firewall.SetupGated,
 		instance.SetupGated,
+		log.SetupGated,
 		maintenancewindow.SetupGated,
 		metric.SetupGated,
 		plugin.SetupGated,
