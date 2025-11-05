@@ -13,6 +13,7 @@ import (
 	firewall "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/firewall"
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/instance"
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/maintenancewindow"
+	metric "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/metric"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/plugin"
 	vpc "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpc"
 	vpcgcppeering "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpcgcppeering"
@@ -28,6 +29,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		firewall.Setup,
 		instance.Setup,
 		maintenancewindow.Setup,
+		metric.Setup,
 		plugin.Setup,
 		vpc.Setup,
 		vpcgcppeering.Setup,
@@ -49,6 +51,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		firewall.SetupGated,
 		instance.SetupGated,
 		maintenancewindow.SetupGated,
+		metric.SetupGated,
 		plugin.SetupGated,
 		vpc.SetupGated,
 		vpcgcppeering.SetupGated,

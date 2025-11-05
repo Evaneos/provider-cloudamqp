@@ -19,6 +19,9 @@ func (tr *Instance) Hub() {}
 func (tr *MaintenanceWindow) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *Metric) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *Plugin) Hub() {}
 
 // Hub marks this type as a conversion hub.

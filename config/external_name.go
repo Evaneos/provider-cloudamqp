@@ -11,6 +11,7 @@ import "github.com/crossplane/upjet/v2/pkg/config"
 var ExternalNameConfigs = map[string]config.ExternalName{
 	// Import requires using a randomly generated ID from provider: nl-2e21sda
 	"cloudamqp_instance":           config.IdentifierFromProvider,
+	"cloudamqp_integration_metric": config.IdentifierFromProvider,
 	"cloudamqp_vpc":                config.IdentifierFromProvider,
 	"cloudamqp_vpc_peering":        config.NameAsIdentifier,
 	"cloudamqp_vpc_gcp_peering":    config.IdentifierFromProvider,
