@@ -21,7 +21,7 @@ func (mg *Metric) GetTerraformResourceType() string {
 
 // GetConnectionDetailsMapping for this Metric
 func (tr *Metric) GetConnectionDetailsMapping() map[string]string {
-	return map[string]string{"api_key": "apiKeySecretRef", "credentials": "credentialsSecretRef", "license_key": "licenseKeySecretRef", "private_key": "privateKeySecretRef", "private_key_id": "privateKeyIdSecretRef", "secret_access_key": "secretAccessKeySecretRef"}
+	return map[string]string{"api_key": "apiKeySecretRef", "credentials": "credentialsSecretRef", "private_key": "privateKeySecretRef", "private_key_id": "privateKeyIdSecretRef", "secret_access_key": "secretAccessKeySecretRef"}
 }
 
 // GetObservation of this Metric

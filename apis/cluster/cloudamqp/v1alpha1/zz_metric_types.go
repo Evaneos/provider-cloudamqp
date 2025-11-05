@@ -16,7 +16,7 @@ import (
 type MetricInitParameters struct {
 
 	// The API key for the integration service.
-	// The API key for the integration service. (Librato)
+	// The API key for the integration service. (Librato, Data Dog, New Relic)
 	APIKeySecretRef *v1.SecretKeySelector `json:"apiKeySecretRef,omitempty" tf:"-"`
 
 	// AWS access key identifier.
@@ -60,12 +60,9 @@ type MetricInitParameters struct {
 	// +kubebuilder:validation:Optional
 	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
 
-	// The license key registred for the integration service. (New Relic)
-	LicenseKeySecretRef *v1.SecretKeySelector `json:"licenseKeySecretRef,omitempty" tf:"-"`
-
 	// The name of the third party log integration. See
 	// Integration service reference
-	// The name of metrics integration
+	// The name of log integration
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The identifier for this resource.
@@ -85,10 +82,6 @@ type MetricInitParameters struct {
 	// (optional) allowlist using regular expression
 	QueueAllowlist *string `json:"queueAllowlist,omitempty" tf:"queue_allowlist,omitempty"`
 
-	// Deprecated Use queue_allowlist instead
-	// **Deprecated**
-	QueueWhitelist *string `json:"queueWhitelist,omitempty" tf:"queue_whitelist,omitempty"`
-
 	// Region hosting the integration service.
 	// AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
 	Region *string `json:"region,omitempty" tf:"region,omitempty"`
@@ -105,10 +98,6 @@ type MetricInitParameters struct {
 	// all vhosts.
 	// (optional) allowlist using regular expression
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
-
-	// Deprecated Use vhost_allowlist instead
-	// **Deprecated**
-	VhostWhitelist *string `json:"vhostWhitelist,omitempty" tf:"vhost_whitelist,omitempty"`
 }
 
 type MetricObservation struct {
@@ -146,7 +135,7 @@ type MetricObservation struct {
 
 	// The name of the third party log integration. See
 	// Integration service reference
-	// The name of metrics integration
+	// The name of log integration
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The project identifier.
@@ -157,10 +146,6 @@ type MetricObservation struct {
 	// all queues.
 	// (optional) allowlist using regular expression
 	QueueAllowlist *string `json:"queueAllowlist,omitempty" tf:"queue_allowlist,omitempty"`
-
-	// Deprecated Use queue_allowlist instead
-	// **Deprecated**
-	QueueWhitelist *string `json:"queueWhitelist,omitempty" tf:"queue_whitelist,omitempty"`
 
 	// Region hosting the integration service.
 	// AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
@@ -174,16 +159,12 @@ type MetricObservation struct {
 	// all vhosts.
 	// (optional) allowlist using regular expression
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
-
-	// Deprecated Use vhost_allowlist instead
-	// **Deprecated**
-	VhostWhitelist *string `json:"vhostWhitelist,omitempty" tf:"vhost_whitelist,omitempty"`
 }
 
 type MetricParameters struct {
 
 	// The API key for the integration service.
-	// The API key for the integration service. (Librato)
+	// The API key for the integration service. (Librato, Data Dog, New Relic)
 	// +kubebuilder:validation:Optional
 	APIKeySecretRef *v1.SecretKeySelector `json:"apiKeySecretRef,omitempty" tf:"-"`
 
@@ -236,13 +217,9 @@ type MetricParameters struct {
 	// +kubebuilder:validation:Optional
 	InstanceIDSelector *v1.Selector `json:"instanceIdSelector,omitempty" tf:"-"`
 
-	// The license key registred for the integration service. (New Relic)
-	// +kubebuilder:validation:Optional
-	LicenseKeySecretRef *v1.SecretKeySelector `json:"licenseKeySecretRef,omitempty" tf:"-"`
-
 	// The name of the third party log integration. See
 	// Integration service reference
-	// The name of metrics integration
+	// The name of log integration
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
@@ -267,11 +244,6 @@ type MetricParameters struct {
 	// +kubebuilder:validation:Optional
 	QueueAllowlist *string `json:"queueAllowlist,omitempty" tf:"queue_allowlist,omitempty"`
 
-	// Deprecated Use queue_allowlist instead
-	// **Deprecated**
-	// +kubebuilder:validation:Optional
-	QueueWhitelist *string `json:"queueWhitelist,omitempty" tf:"queue_whitelist,omitempty"`
-
 	// Region hosting the integration service.
 	// AWS region for Cloudwatch and [US/EU] for Data dog/New relic. (Cloudwatch, Data Dog, New Relic)
 	// +kubebuilder:validation:Optional
@@ -292,11 +264,6 @@ type MetricParameters struct {
 	// (optional) allowlist using regular expression
 	// +kubebuilder:validation:Optional
 	VhostAllowlist *string `json:"vhostAllowlist,omitempty" tf:"vhost_allowlist,omitempty"`
-
-	// Deprecated Use vhost_allowlist instead
-	// **Deprecated**
-	// +kubebuilder:validation:Optional
-	VhostWhitelist *string `json:"vhostWhitelist,omitempty" tf:"vhost_whitelist,omitempty"`
 }
 
 // MetricSpec defines the desired state of Metric

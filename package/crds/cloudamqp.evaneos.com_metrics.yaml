@@ -81,7 +81,7 @@ spec:
                   apiKeySecretRef:
                     description: |-
                       The API key for the integration service.
-                      The API key for the integration service. (Librato)
+                      The API key for the integration service. (Librato, Data Dog, New Relic)
                     properties:
                       key:
                         description: The key to select.
@@ -222,29 +222,11 @@ spec:
                             type: string
                         type: object
                     type: object
-                  licenseKeySecretRef:
-                    description: The license key registred for the integration service.
-                      (New Relic)
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
                   name:
                     description: |-
                       The name of the third party log integration. See
                       Integration service reference
-                      The name of metrics integration
+                      The name of log integration
                     type: string
                   privateKeyIdSecretRef:
                     description: |-
@@ -295,11 +277,6 @@ spec:
                       all queues.
                       (optional) allowlist using regular expression
                     type: string
-                  queueWhitelist:
-                    description: |-
-                      Deprecated Use queue_allowlist instead
-                      **Deprecated**
-                    type: string
                   region:
                     description: |-
                       Region hosting the integration service.
@@ -334,11 +311,6 @@ spec:
                       Allowlist vhost using regular expression. Leave empty to include
                       all vhosts.
                       (optional) allowlist using regular expression
-                    type: string
-                  vhostWhitelist:
-                    description: |-
-                      Deprecated Use vhost_allowlist instead
-                      **Deprecated**
                     type: string
                 type: object
               initProvider:
@@ -362,7 +334,7 @@ spec:
                   apiKeySecretRef:
                     description: |-
                       The API key for the integration service.
-                      The API key for the integration service. (Librato)
+                      The API key for the integration service. (Librato, Data Dog, New Relic)
                     properties:
                       key:
                         description: The key to select.
@@ -503,29 +475,11 @@ spec:
                             type: string
                         type: object
                     type: object
-                  licenseKeySecretRef:
-                    description: The license key registred for the integration service.
-                      (New Relic)
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
                   name:
                     description: |-
                       The name of the third party log integration. See
                       Integration service reference
-                      The name of metrics integration
+                      The name of log integration
                     type: string
                   privateKeyIdSecretRef:
                     description: |-
@@ -576,11 +530,6 @@ spec:
                       all queues.
                       (optional) allowlist using regular expression
                     type: string
-                  queueWhitelist:
-                    description: |-
-                      Deprecated Use queue_allowlist instead
-                      **Deprecated**
-                    type: string
                   region:
                     description: |-
                       Region hosting the integration service.
@@ -615,11 +564,6 @@ spec:
                       Allowlist vhost using regular expression. Leave empty to include
                       all vhosts.
                       (optional) allowlist using regular expression
-                    type: string
-                  vhostWhitelist:
-                    description: |-
-                      Deprecated Use vhost_allowlist instead
-                      **Deprecated**
                     type: string
                 type: object
               managementPolicies:
@@ -760,7 +704,7 @@ spec:
                     description: |-
                       The name of the third party log integration. See
                       Integration service reference
-                      The name of metrics integration
+                      The name of log integration
                     type: string
                   projectId:
                     description: |-
@@ -772,11 +716,6 @@ spec:
                       Allowlist queues using regular expression. Leave empty to include
                       all queues.
                       (optional) allowlist using regular expression
-                    type: string
-                  queueWhitelist:
-                    description: |-
-                      Deprecated Use queue_allowlist instead
-                      **Deprecated**
                     type: string
                   region:
                     description: |-
@@ -793,11 +732,6 @@ spec:
                       Allowlist vhost using regular expression. Leave empty to include
                       all vhosts.
                       (optional) allowlist using regular expression
-                    type: string
-                  vhostWhitelist:
-                    description: |-
-                      Deprecated Use vhost_allowlist instead
-                      **Deprecated**
                     type: string
                 type: object
               conditions:

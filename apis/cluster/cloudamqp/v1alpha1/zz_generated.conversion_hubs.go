@@ -25,6 +25,9 @@ func (tr *Metric) Hub() {}
 func (tr *Plugin) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *Prometheus) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *VPC) Hub() {}
 
 // Hub marks this type as a conversion hub.
