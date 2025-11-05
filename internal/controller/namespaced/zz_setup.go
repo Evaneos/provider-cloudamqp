@@ -12,11 +12,11 @@ import (
 	community "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/community"
 	firewall "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/firewall"
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/instance"
-	log "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/log"
+	integrationlog "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationlog"
+	integrationmetric "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationmetric"
+	integrationprometheus "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationprometheus"
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/maintenancewindow"
-	metric "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/metric"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/plugin"
-	prometheus "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/prometheus"
 	vpc "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpc"
 	vpcgcppeering "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpcgcppeering"
 	vpcpeering "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpcpeering"
@@ -30,11 +30,11 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		community.Setup,
 		firewall.Setup,
 		instance.Setup,
-		log.Setup,
+		integrationlog.Setup,
+		integrationmetric.Setup,
+		integrationprometheus.Setup,
 		maintenancewindow.Setup,
-		metric.Setup,
 		plugin.Setup,
-		prometheus.Setup,
 		vpc.Setup,
 		vpcgcppeering.Setup,
 		vpcpeering.Setup,
@@ -54,11 +54,11 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		community.SetupGated,
 		firewall.SetupGated,
 		instance.SetupGated,
-		log.SetupGated,
+		integrationlog.SetupGated,
+		integrationmetric.SetupGated,
+		integrationprometheus.SetupGated,
 		maintenancewindow.SetupGated,
-		metric.SetupGated,
 		plugin.SetupGated,
-		prometheus.SetupGated,
 		vpc.SetupGated,
 		vpcgcppeering.SetupGated,
 		vpcpeering.SetupGated,

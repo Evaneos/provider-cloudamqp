@@ -35,8 +35,26 @@ func (l *InstanceList) GetItems() []resource.Managed {
 	return items
 }
 
-// GetItems of this LogList.
-func (l *LogList) GetItems() []resource.Managed {
+// GetItems of this IntegrationLogList.
+func (l *IntegrationLogList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
+// GetItems of this IntegrationMetricList.
+func (l *IntegrationMetricList) GetItems() []resource.Managed {
+	items := make([]resource.Managed, len(l.Items))
+	for i := range l.Items {
+		items[i] = &l.Items[i]
+	}
+	return items
+}
+
+// GetItems of this IntegrationPrometheusList.
+func (l *IntegrationPrometheusList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))
 	for i := range l.Items {
 		items[i] = &l.Items[i]
@@ -53,26 +71,8 @@ func (l *MaintenanceWindowList) GetItems() []resource.Managed {
 	return items
 }
 
-// GetItems of this MetricList.
-func (l *MetricList) GetItems() []resource.Managed {
-	items := make([]resource.Managed, len(l.Items))
-	for i := range l.Items {
-		items[i] = &l.Items[i]
-	}
-	return items
-}
-
 // GetItems of this PluginList.
 func (l *PluginList) GetItems() []resource.Managed {
-	items := make([]resource.Managed, len(l.Items))
-	for i := range l.Items {
-		items[i] = &l.Items[i]
-	}
-	return items
-}
-
-// GetItems of this PrometheusList.
-func (l *PrometheusList) GetItems() []resource.Managed {
 	items := make([]resource.Managed, len(l.Items))
 	for i := range l.Items {
 		items[i] = &l.Items[i]

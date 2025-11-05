@@ -14,7 +14,7 @@ import (
 	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
 )
 
-type LogInitParameters struct {
+type IntegrationLogInitParameters struct {
 
 	// The API key.
 	// The API key for the integration service. (Datadog)
@@ -135,7 +135,7 @@ type LogInitParameters struct {
 	URL *string `json:"url,omitempty" tf:"url,omitempty"`
 }
 
-type LogObservation struct {
+type IntegrationLogObservation struct {
 
 	// The application name for Coralogix.
 	// The name of the application. (Azure Monitor)
@@ -218,7 +218,7 @@ type LogObservation struct {
 	URL *string `json:"url,omitempty" tf:"url,omitempty"`
 }
 
-type LogParameters struct {
+type IntegrationLogParameters struct {
 
 	// The API key.
 	// The API key for the integration service. (Datadog)
@@ -366,10 +366,10 @@ type LogParameters struct {
 	URL *string `json:"url,omitempty" tf:"url,omitempty"`
 }
 
-// LogSpec defines the desired state of Log
-type LogSpec struct {
+// IntegrationLogSpec defines the desired state of IntegrationLog
+type IntegrationLogSpec struct {
 	v2.ManagedResourceSpec `json:",inline"`
-	ForProvider            LogParameters `json:"forProvider"`
+	ForProvider            IntegrationLogParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -380,50 +380,50 @@ type LogSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider LogInitParameters `json:"initProvider,omitempty"`
+	InitProvider IntegrationLogInitParameters `json:"initProvider,omitempty"`
 }
 
-// LogStatus defines the observed state of Log.
-type LogStatus struct {
+// IntegrationLogStatus defines the observed state of IntegrationLog.
+type IntegrationLogStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        LogObservation `json:"atProvider,omitempty"`
+	AtProvider        IntegrationLogObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// Log is the Schema for the Logs API. Creates and manages third party log integration for a CloudAMQP instance.
+// IntegrationLog is the Schema for the IntegrationLogs API. Creates and manages third party log integration for a CloudAMQP instance.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:resource:scope=Namespaced,categories={crossplane,managed,cloudamqp}
-type Log struct {
+type IntegrationLog struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
-	Spec   LogSpec   `json:"spec"`
-	Status LogStatus `json:"status,omitempty"`
+	Spec   IntegrationLogSpec   `json:"spec"`
+	Status IntegrationLogStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// LogList contains a list of Logs
-type LogList struct {
+// IntegrationLogList contains a list of IntegrationLogs
+type IntegrationLogList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Log `json:"items"`
+	Items           []IntegrationLog `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	Log_Kind             = "Log"
-	Log_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: Log_Kind}.String()
-	Log_KindAPIVersion   = Log_Kind + "." + CRDGroupVersion.String()
-	Log_GroupVersionKind = CRDGroupVersion.WithKind(Log_Kind)
+	IntegrationLog_Kind             = "IntegrationLog"
+	IntegrationLog_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: IntegrationLog_Kind}.String()
+	IntegrationLog_KindAPIVersion   = IntegrationLog_Kind + "." + CRDGroupVersion.String()
+	IntegrationLog_GroupVersionKind = CRDGroupVersion.WithKind(IntegrationLog_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&Log{}, &LogList{})
+	SchemeBuilder.Register(&IntegrationLog{}, &IntegrationLogList{})
 }

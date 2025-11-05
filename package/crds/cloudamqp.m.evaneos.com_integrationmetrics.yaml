@@ -4,7 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: metrics.cloudamqp.m.evaneos.com
+  name: integrationmetrics.cloudamqp.m.evaneos.com
 spec:
   group: cloudamqp.m.evaneos.com
   names:
@@ -12,10 +12,10 @@ spec:
     - crossplane
     - managed
     - cloudamqp
-    kind: Metric
-    listKind: MetricList
-    plural: metrics
-    singular: metric
+    kind: IntegrationMetric
+    listKind: IntegrationMetricList
+    plural: integrationmetrics
+    singular: integrationmetric
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Metric is the Schema for the Metrics API. Creates and manages
-          third party metrics integration for a CloudAMQP instance.
+        description: IntegrationMetric is the Schema for the IntegrationMetrics API.
+          Creates and manages third party metrics integration for a CloudAMQP instance.
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: MetricSpec defines the desired state of Metric
+            description: IntegrationMetricSpec defines the desired state of IntegrationMetric
             properties:
               forProvider:
                 properties:
@@ -578,7 +578,7 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: MetricStatus defines the observed state of Metric.
+            description: IntegrationMetricStatus defines the observed state of IntegrationMetric.
             properties:
               atProvider:
                 properties:

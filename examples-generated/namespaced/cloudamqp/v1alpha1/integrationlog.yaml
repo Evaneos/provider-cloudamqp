@@ -1,8 +1,8 @@
 apiVersion: cloudamqp.m.evaneos.com/v1alpha1
-kind: Log
+kind: IntegrationLog
 metadata:
   annotations:
-    meta.upbound.io/example-id: cloudamqp/v1alpha1/log
+    meta.upbound.io/example-id: cloudamqp/v1alpha1/integrationlog
   labels:
     testing.upbound.io/example-name: azure_monitor
   name: azure-monitor

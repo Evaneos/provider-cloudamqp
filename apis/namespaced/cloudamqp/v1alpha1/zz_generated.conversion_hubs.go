@@ -16,19 +16,19 @@ func (tr *Firewall) Hub() {}
 func (tr *Instance) Hub() {}
 
 // Hub marks this type as a conversion hub.
-func (tr *Log) Hub() {}
+func (tr *IntegrationLog) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *IntegrationMetric) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *IntegrationPrometheus) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *MaintenanceWindow) Hub() {}
 
 // Hub marks this type as a conversion hub.
-func (tr *Metric) Hub() {}
-
-// Hub marks this type as a conversion hub.
 func (tr *Plugin) Hub() {}
-
-// Hub marks this type as a conversion hub.
-func (tr *Prometheus) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *VPC) Hub() {}

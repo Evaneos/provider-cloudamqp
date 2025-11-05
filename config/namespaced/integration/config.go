@@ -6,6 +6,7 @@ import "github.com/crossplane/upjet/v2/pkg/config"
 func Configure(p *config.Provider) {
 	p.AddResourceConfigurator("cloudamqp_integration_metric", func(r *config.Resource) {
 		r.ShortGroup = "cloudamqp"
+		r.Kind = "IntegrationMetric"
 
 		r.References["instance_id"] = config.Reference{
 			TerraformName: "cloudamqp_instance",
@@ -14,6 +15,7 @@ func Configure(p *config.Provider) {
 
 	p.AddResourceConfigurator("cloudamqp_integration_log", func(r *config.Resource) {
 		r.ShortGroup = "cloudamqp"
+		r.Kind = "IntegrationLog"
 
 		r.References["instance_id"] = config.Reference{
 			TerraformName: "cloudamqp_instance",
@@ -22,7 +24,7 @@ func Configure(p *config.Provider) {
 
 	p.AddResourceConfigurator("cloudamqp_integration_metric_prometheus", func(r *config.Resource) {
 		r.ShortGroup = "cloudamqp"
-		r.Kind = "Prometheus"
+		r.Kind = "IntegrationPrometheus"
 
 		r.References["instance_id"] = config.Reference{
 			TerraformName: "cloudamqp_instance",

@@ -4,7 +4,7 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: logs.cloudamqp.m.evaneos.com
+  name: integrationlogs.cloudamqp.m.evaneos.com
 spec:
   group: cloudamqp.m.evaneos.com
   names:
@@ -12,10 +12,10 @@ spec:
     - crossplane
     - managed
     - cloudamqp
-    kind: Log
-    listKind: LogList
-    plural: logs
-    singular: log
+    kind: IntegrationLog
+    listKind: IntegrationLogList
+    plural: integrationlogs
+    singular: integrationlog
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Log is the Schema for the Logs API. Creates and manages third
-          party log integration for a CloudAMQP instance.
+        description: IntegrationLog is the Schema for the IntegrationLogs API. Creates
+          and manages third party log integration for a CloudAMQP instance.
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: LogSpec defines the desired state of Log
+            description: IntegrationLogSpec defines the desired state of IntegrationLog
             properties:
               forProvider:
                 properties:
@@ -718,7 +718,7 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: LogStatus defines the observed state of Log.
+            description: IntegrationLogStatus defines the observed state of IntegrationLog.
             properties:
               atProvider:
                 properties:

@@ -14,18 +14,18 @@ import (
 	"github.com/crossplane/upjet/v2/pkg/resource/json"
 )
 
-// GetTerraformResourceType returns Terraform resource type for this Log
-func (mg *Log) GetTerraformResourceType() string {
-	return "cloudamqp_integration_log"
+// GetTerraformResourceType returns Terraform resource type for this IntegrationPrometheus
+func (mg *IntegrationPrometheus) GetTerraformResourceType() string {
+	return "cloudamqp_integration_metric_prometheus"
 }
 
-// GetConnectionDetailsMapping for this Log
-func (tr *Log) GetConnectionDetailsMapping() map[string]string {
-	return map[string]string{"access_key_id": "accessKeyIdSecretRef", "api_key": "apiKeySecretRef", "application_secret": "applicationSecretSecretRef", "credentials": "credentialsSecretRef", "private_key": "privateKeySecretRef", "private_key_id": "privateKeyIdSecretRef", "secret_access_key": "secretAccessKeySecretRef", "token": "tokenSecretRef"}
+// GetConnectionDetailsMapping for this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetConnectionDetailsMapping() map[string]string {
+	return map[string]string{"azure_monitor[*].connection_string": "azureMonitor[*].connectionStringSecretRef", "datadog_v3[*].api_key": "datadogV3[*].apiKeySecretRef", "dynatrace[*].access_token": "dynatrace[*].accessTokenSecretRef", "newrelic_v3[*].api_key": "newrelicV3[*].apiKeySecretRef", "splunk_v2[*].token": "splunkV2[*].tokenSecretRef", "stackdriver_v2[*].credentials_file": "stackdriverV2[*].credentialsFileSecretRef", "stackdriver_v2[*].private_key": "status.atProvider.stackdriverV2[*].privateKey", "stackdriver_v2[*].private_key_id": "status.atProvider.stackdriverV2[*].privateKeyId"}
 }
 
-// GetObservation of this Log
-func (tr *Log) GetObservation() (map[string]any, error) {
+// GetObservation of this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetObservation() (map[string]any, error) {
 	o, err := json.TFParser.Marshal(tr.Status.AtProvider)
 	if err != nil {
 		return nil, err
@@ -34,8 +34,8 @@ func (tr *Log) GetObservation() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(o, &base)
 }
 
-// SetObservation for this Log
-func (tr *Log) SetObservation(obs map[string]any) error {
+// SetObservation for this IntegrationPrometheus
+func (tr *IntegrationPrometheus) SetObservation(obs map[string]any) error {
 	p, err := json.TFParser.Marshal(obs)
 	if err != nil {
 		return err
@@ -43,16 +43,16 @@ func (tr *Log) SetObservation(obs map[string]any) error {
 	return json.TFParser.Unmarshal(p, &tr.Status.AtProvider)
 }
 
-// GetID returns ID of underlying Terraform resource of this Log
-func (tr *Log) GetID() string {
+// GetID returns ID of underlying Terraform resource of this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetID() string {
 	if tr.Status.AtProvider.ID == nil {
 		return ""
 	}
 	return *tr.Status.AtProvider.ID
 }
 
-// GetParameters of this Log
-func (tr *Log) GetParameters() (map[string]any, error) {
+// GetParameters of this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetParameters() (map[string]any, error) {
 	p, err := json.TFParser.Marshal(tr.Spec.ForProvider)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (tr *Log) GetParameters() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(p, &base)
 }
 
-// SetParameters for this Log
-func (tr *Log) SetParameters(params map[string]any) error {
+// SetParameters for this IntegrationPrometheus
+func (tr *IntegrationPrometheus) SetParameters(params map[string]any) error {
 	p, err := json.TFParser.Marshal(params)
 	if err != nil {
 		return err
@@ -70,8 +70,8 @@ func (tr *Log) SetParameters(params map[string]any) error {
 	return json.TFParser.Unmarshal(p, &tr.Spec.ForProvider)
 }
 
-// GetInitParameters of this Log
-func (tr *Log) GetInitParameters() (map[string]any, error) {
+// GetInitParameters of this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetInitParameters() (map[string]any, error) {
 	p, err := json.TFParser.Marshal(tr.Spec.InitProvider)
 	if err != nil {
 		return nil, err
@@ -80,8 +80,8 @@ func (tr *Log) GetInitParameters() (map[string]any, error) {
 	return base, json.TFParser.Unmarshal(p, &base)
 }
 
-// GetInitParameters of this Log
-func (tr *Log) GetMergedParameters(shouldMergeInitProvider bool) (map[string]any, error) {
+// GetInitParameters of this IntegrationPrometheus
+func (tr *IntegrationPrometheus) GetMergedParameters(shouldMergeInitProvider bool) (map[string]any, error) {
 	params, err := tr.GetParameters()
 	if err != nil {
 		return nil, errors.Wrapf(err, "cannot get parameters for resource \"%s/%s\"", tr.GetNamespace(), tr.GetName())
@@ -110,10 +110,10 @@ func (tr *Log) GetMergedParameters(shouldMergeInitProvider bool) (map[string]any
 	return params, nil
 }
 
-// LateInitialize this Log using its observed tfState.
+// LateInitialize this IntegrationPrometheus using its observed tfState.
 // returns True if there are any spec changes for the resource.
-func (tr *Log) LateInitialize(attrs []byte) (bool, error) {
-	params := &LogParameters{}
+func (tr *IntegrationPrometheus) LateInitialize(attrs []byte) (bool, error) {
+	params := &IntegrationPrometheusParameters{}
 	if err := json.TFParser.Unmarshal(attrs, params); err != nil {
 		return false, errors.Wrap(err, "failed to unmarshal Terraform state parameters for late-initialization")
 	}
@@ -124,6 +124,6 @@ func (tr *Log) LateInitialize(attrs []byte) (bool, error) {
 }
 
 // GetTerraformSchemaVersion returns the associated Terraform schema version
-func (tr *Log) GetTerraformSchemaVersion() int {
+func (tr *IntegrationPrometheus) GetTerraformSchemaVersion() int {
 	return 0
 }
