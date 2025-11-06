@@ -12,10 +12,10 @@ TERRAFORM_VERSION_VALID := $(shell [ "$(TERRAFORM_VERSION)" = "`printf "$(TERRAF
 
 export TERRAFORM_PROVIDER_SOURCE ?= cloudamqp/cloudamqp
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/cloudamqp/terraform-provider-cloudamqp
-export TERRAFORM_PROVIDER_VERSION ?= 1.38.0
+export TERRAFORM_PROVIDER_VERSION ?= 1.38.1
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-cloudamqp
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/releases/download/v$(TERRAFORM_PROVIDER_VERSION)
-export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-cloudamqp_v1.38.0
+export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-cloudamqp_v1.38.1
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
 
@@ -134,8 +134,6 @@ pull-docs:
 		git clone -c advice.detachedHead=false --depth 1 --filter=blob:none --branch "v$(TERRAFORM_PROVIDER_VERSION)" --sparse "$(TERRAFORM_PROVIDER_REPO)" "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)"; \
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
-	# This is an ugly temp hack to add the header on the doc
-	cp hack/integration_metric_prometheus.md $(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)/docs/resources
 
 generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
 
