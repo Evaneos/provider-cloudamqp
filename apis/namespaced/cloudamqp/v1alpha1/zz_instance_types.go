@@ -82,6 +82,10 @@ type InstanceInitParameters struct {
 	// Name of the plan, see documentation for valid plans
 	Plan *string `json:"plan,omitempty" tf:"plan,omitempty"`
 
+	// The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+	// Preferred availability zone for the instance(s), one entry per node in the cluster
+	PreferredAz []*string `json:"preferredAz,omitempty" tf:"preferred_az,omitempty"`
+
 	// The region to host the instance in. See available regions.
 	// Name of the region you want to create your instance in
 	Region *string `json:"region,omitempty" tf:"region,omitempty"`
@@ -163,6 +167,10 @@ type InstanceObservation struct {
 	// Name of the plan, see documentation for valid plans
 	Plan *string `json:"plan,omitempty" tf:"plan,omitempty"`
 
+	// The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+	// Preferred availability zone for the instance(s), one entry per node in the cluster
+	PreferredAz []*string `json:"preferredAz,omitempty" tf:"preferred_az,omitempty"`
+
 	// Flag describing if the resource is ready
 	Ready *bool `json:"ready,omitempty" tf:"ready,omitempty"`
 
@@ -227,6 +235,11 @@ type InstanceParameters struct {
 	// Name of the plan, see documentation for valid plans
 	// +kubebuilder:validation:Optional
 	Plan *string `json:"plan,omitempty" tf:"plan,omitempty"`
+
+	// The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+	// Preferred availability zone for the instance(s), one entry per node in the cluster
+	// +kubebuilder:validation:Optional
+	PreferredAz []*string `json:"preferredAz,omitempty" tf:"preferred_az,omitempty"`
 
 	// The region to host the instance in. See available regions.
 	// Name of the region you want to create your instance in

@@ -11,12 +11,14 @@ import (
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 
 	instanceCluster "github.com/evaneos/provider-cloudamqp/config/cluster/instance"
+	integrationCluster "github.com/evaneos/provider-cloudamqp/config/cluster/integration"
 	maintenanceCluster "github.com/evaneos/provider-cloudamqp/config/cluster/maintenance"
 	pluginCluster "github.com/evaneos/provider-cloudamqp/config/cluster/plugin"
 	securityCluster "github.com/evaneos/provider-cloudamqp/config/cluster/security"
 	vpcCluster "github.com/evaneos/provider-cloudamqp/config/cluster/vpc"
 
 	instanceNamespaced "github.com/evaneos/provider-cloudamqp/config/namespaced/instance"
+	integrationNamespaced "github.com/evaneos/provider-cloudamqp/config/namespaced/integration"
 	maintenanceNamespaced "github.com/evaneos/provider-cloudamqp/config/namespaced/maintenance"
 	pluginNamespaced "github.com/evaneos/provider-cloudamqp/config/namespaced/plugin"
 	securityNamespaced "github.com/evaneos/provider-cloudamqp/config/namespaced/security"
@@ -47,6 +49,7 @@ func GetProvider() *ujconfig.Provider {
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
 		instanceCluster.Configure,
+		integrationCluster.Configure,
 		vpcCluster.Configure,
 		maintenanceCluster.Configure,
 		pluginCluster.Configure,
@@ -72,6 +75,7 @@ func GetProviderNamespaced() *ujconfig.Provider {
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
 		instanceNamespaced.Configure,
+		integrationNamespaced.Configure,
 		vpcNamespaced.Configure,
 		maintenanceNamespaced.Configure,
 		pluginNamespaced.Configure,

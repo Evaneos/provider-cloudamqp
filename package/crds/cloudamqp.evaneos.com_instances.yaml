@@ -120,6 +120,13 @@ spec:
                       The subscription plan. See available plans.
                       Name of the plan, see documentation for valid plans
                     type: string
+                  preferredAz:
+                    description: |-
+                      The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+                      Preferred availability zone for the instance(s), one entry per node in the cluster
+                    items:
+                      type: string
+                    type: array
                   region:
                     description: |-
                       The region to host the instance in. See available regions.
@@ -286,6 +293,13 @@ spec:
                       The subscription plan. See available plans.
                       Name of the plan, see documentation for valid plans
                     type: string
+                  preferredAz:
+                    description: |-
+                      The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+                      Preferred availability zone for the instance(s), one entry per node in the cluster
+                    items:
+                      type: string
+                    type: array
                   region:
                     description: |-
                       The region to host the instance in. See available regions.
@@ -568,6 +582,13 @@ spec:
                       The subscription plan. See available plans.
                       Name of the plan, see documentation for valid plans
                     type: string
+                  preferredAz:
+                    description: |-
+                      The AZs to place your nodes in. Each entry corresponds to a server in your cluster, so for a 3 node cluster, provide 3 AZs in the list.
+                      Preferred availability zone for the instance(s), one entry per node in the cluster
+                    items:
+                      type: string
+                    type: array
                   ready:
                     description: Flag describing if the resource is ready
                     type: boolean

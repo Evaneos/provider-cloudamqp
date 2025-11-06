@@ -66,17 +66,17 @@ spec:
                   region:
                     description: |-
                       The hosted region for the managed standalone VPC
-                      The hosted region for the standalone VPC instance
+                      Region where the VPC is located
                     type: string
                   subnet:
                     description: |-
                       The VPC subnet
-                      The VPC subnet
+                      The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
                     type: string
                   tags:
                     description: |-
                       Tag the VPC with optional tags
-                      Tag the VPC instance with optional tags
+                      Optional tags to associate with the VPC instance
                     items:
                       type: string
                     type: array
@@ -102,17 +102,17 @@ spec:
                   region:
                     description: |-
                       The hosted region for the managed standalone VPC
-                      The hosted region for the standalone VPC instance
+                      Region where the VPC is located
                     type: string
                   subnet:
                     description: |-
                       The VPC subnet
-                      The VPC subnet
+                      The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
                     type: string
                   tags:
                     description: |-
                       Tag the VPC with optional tags
-                      Tag the VPC instance with optional tags
+                      Optional tags to associate with the VPC instance
                     items:
                       type: string
                     type: array
@@ -204,17 +204,17 @@ spec:
                   region:
                     description: |-
                       The hosted region for the managed standalone VPC
-                      The hosted region for the standalone VPC instance
+                      Region where the VPC is located
                     type: string
                   subnet:
                     description: |-
                       The VPC subnet
-                      The VPC subnet
+                      The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
                     type: string
                   tags:
                     description: |-
                       Tag the VPC with optional tags
-                      Tag the VPC instance with optional tags
+                      Optional tags to associate with the VPC instance
                     items:
                       type: string
                     type: array

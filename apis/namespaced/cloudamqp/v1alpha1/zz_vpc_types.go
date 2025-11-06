@@ -21,15 +21,15 @@ type VPCInitParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The hosted region for the managed standalone VPC
-	// The hosted region for the standalone VPC instance
+	// Region where the VPC is located
 	Region *string `json:"region,omitempty" tf:"region,omitempty"`
 
 	// The VPC subnet
-	// The VPC subnet
+	// The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
 	// Tag the VPC with optional tags
-	// Tag the VPC instance with optional tags
+	// Optional tags to associate with the VPC instance
 	Tags []*string `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
@@ -43,15 +43,15 @@ type VPCObservation struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The hosted region for the managed standalone VPC
-	// The hosted region for the standalone VPC instance
+	// Region where the VPC is located
 	Region *string `json:"region,omitempty" tf:"region,omitempty"`
 
 	// The VPC subnet
-	// The VPC subnet
+	// The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
 	// Tag the VPC with optional tags
-	// Tag the VPC instance with optional tags
+	// Optional tags to associate with the VPC instance
 	Tags []*string `json:"tags,omitempty" tf:"tags,omitempty"`
 
 	// VPC name given when hosted at the cloud provider
@@ -67,17 +67,17 @@ type VPCParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The hosted region for the managed standalone VPC
-	// The hosted region for the standalone VPC instance
+	// Region where the VPC is located
 	// +kubebuilder:validation:Optional
 	Region *string `json:"region,omitempty" tf:"region,omitempty"`
 
 	// The VPC subnet
-	// The VPC subnet
+	// The VPC subnet in CIDR notation (e.g., 10.56.72.0/24)
 	// +kubebuilder:validation:Optional
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
 	// Tag the VPC with optional tags
-	// Tag the VPC instance with optional tags
+	// Optional tags to associate with the VPC instance
 	// +kubebuilder:validation:Optional
 	Tags []*string `json:"tags,omitempty" tf:"tags,omitempty"`
 }

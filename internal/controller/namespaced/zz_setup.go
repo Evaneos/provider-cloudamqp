@@ -12,6 +12,9 @@ import (
 	community "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/community"
 	firewall "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/firewall"
 	instance "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/instance"
+	integrationlog "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationlog"
+	integrationmetric "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationmetric"
+	integrationprometheus "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/integrationprometheus"
 	maintenancewindow "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/maintenancewindow"
 	plugin "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/plugin"
 	vpc "github.com/evaneos/provider-cloudamqp/internal/controller/namespaced/cloudamqp/vpc"
@@ -27,6 +30,9 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		community.Setup,
 		firewall.Setup,
 		instance.Setup,
+		integrationlog.Setup,
+		integrationmetric.Setup,
+		integrationprometheus.Setup,
 		maintenancewindow.Setup,
 		plugin.Setup,
 		vpc.Setup,
@@ -48,6 +54,9 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		community.SetupGated,
 		firewall.SetupGated,
 		instance.SetupGated,
+		integrationlog.SetupGated,
+		integrationmetric.SetupGated,
+		integrationprometheus.SetupGated,
 		maintenancewindow.SetupGated,
 		plugin.SetupGated,
 		vpc.SetupGated,
