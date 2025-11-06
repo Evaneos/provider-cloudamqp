@@ -1,10 +1,10 @@
 name: cloudamqp/cloudamqp
 resources:
-    cloudamqp_account_action:
+    cloudamqp_account_actions:
         subCategory: ""
         description: Invoke account action
-        name: cloudamqp_account_action
-        title: cloudamqp_account_action
+        name: cloudamqp_account_actions
+        title: cloudamqp_account_actions
         examples:
             - name: rotate-password
               manifest: |-
@@ -22,6 +22,38 @@ resources:
                 }
               references:
                 instance_id: cloudamqp_instance.instance.id
+            - name: enable_vpc
+              manifest: |-
+                {
+                  "action": "enable-vpc",
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+            - name: enable_vpc
+              manifest: |-
+                {
+                  "action": "enable-vpc",
+                  "instance_id": "${cloudamqp_instance.instance.id}"
+                }
+              references:
+                instance_id: cloudamqp_instance.instance.id
+              dependencies:
+                cloudamqp_instance.instance: |-
+                    {
+                      "keep_associated_vpc": true,
+                      "name": "enable-vpc-feature",
+                      "plan": "penguin-1",
+                      "region": "amazon-web-services::us-east-1",
+                      "tags": [],
+                      "vpc_id": "${cloudamqp_vpc.vpc.id}"
+                    }
+                cloudamqp_vpc.vpc: |-
+                    {
+                      "name": "enable-vpc-feature",
+                      "region": "amazon-web-services::us-east-1",
+                      "subnet": "10.56.72.0/24"
+                    }
         argumentDocs:
             action: |-
                 - (Required/ForceNew) The action to be invoked. Allowed actions
@@ -1065,7 +1097,7 @@ resources:
         importStatements: []
     cloudamqp_integration_metric_prometheus:
         subCategory: ""
-        description: Creates and manages third party prometheus metrics integration for a CloudAMQP instance.
+        description: Creates and manages third party Prometheus metrics integrations for a CloudAMQP instance.
         name: cloudamqp_integration_metric_prometheus
         title: cloudamqp_integration_metric_prometheus
         examples:

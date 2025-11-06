@@ -35,7 +35,7 @@ spec:
     schema:
       openAPIV3Schema:
         description: IntegrationPrometheus is the Schema for the IntegrationPrometheuss
-          API. Creates and manages third party prometheus metrics integration for
+          API. Creates and manages third party Prometheus metrics integrations for
           a CloudAMQP instance.
         properties:
           apiVersion:
