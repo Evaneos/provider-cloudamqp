@@ -2,9 +2,10 @@
 # d'infra platform. Pour déployer sur un nouveau repo : copier ce fichier et
 # ajouter le secret PLATFORM_TRIAGE_TOKEN (voir scripts/rotate-platform-triage-token.sh).
 # Doc : https://github.com/Evaneos/team-platform/issues/239
+---
 name: "Triage Platform"
 
-on:
+"on":
   issues:
     types:
       - opened
@@ -36,4 +37,3 @@ jobs:
       repository_name: ${{ github.event.repository.name }}
     secrets:
       PLATFORM_TRIAGE_TOKEN: ${{ secrets.PLATFORM_TRIAGE_TOKEN }}
-
