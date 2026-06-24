@@ -116,11 +116,9 @@ issues:
   new: false
 formatters:
   enable:
-    - gofmt
+    - gofumpt
     - goimports
   settings:
-    gofmt:
-      simplify: true
     goimports:
       local-prefixes:
         - github.com/crossplane/upjet-provider-template
