@@ -21,7 +21,6 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		return err
 	}
 	return setupClusterProviderConfig(mgr, o)
-
 }
 
 func setupNamespacedProviderConfig(mgr ctrl.Manager, o controller.Options) error {
