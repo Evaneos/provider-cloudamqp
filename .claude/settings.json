@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "evaneos-claude-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "Evaneos/claude-marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "platform@evaneos-claude-marketplace": true
+  }
+}
