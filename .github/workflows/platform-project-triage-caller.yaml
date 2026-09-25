@@ -1,6 +1,7 @@
 # Caller du triage automatique. Ce fichier est identique dans tous les repos
 # d'infra platform. Pour déployer sur un nouveau repo : copier ce fichier et
-# ajouter le secret PLATFORM_TRIAGE_TOKEN (voir scripts/rotate-platform-triage-token.sh).
+# donner au repo l'accès au secret d'org PLATFORM_TRIAGE_APP_PRIVATE_KEY et y
+# installer la GitHub App platform-triage.
 # Doc : https://github.com/Evaneos/team-platform/issues/239
 ---
 name: "Triage Platform"
@@ -32,7 +33,7 @@ permissions:
 jobs:
   triage:
     # Dependabot a son propre store de secrets et n'a pas accès à
-    # PLATFORM_TRIAGE_TOKEN, le triage échouerait. Renovate (GitHub App)
+    # PLATFORM_TRIAGE_APP_PRIVATE_KEY, le triage échouerait. Renovate (GitHub App)
     # tourne dans un workflow normal et a accès aux secrets du repo.
     if: github.actor != 'dependabot[bot]'
     uses: evaneos/team-platform/.github/workflows/triage.yaml@main
@@ -40,4 +41,5 @@ jobs:
       item_number: ${{ github.event.issue.number || github.event.pull_request.number || fromJSON(github.event.inputs.item_number) }}
       repository_name: ${{ github.event.repository.name }}
     secrets:
+      PLATFORM_TRIAGE_APP_PRIVATE_KEY: ${{ secrets.PLATFORM_TRIAGE_APP_PRIVATE_KEY }}
       PLATFORM_TRIAGE_TOKEN: ${{ secrets.PLATFORM_TRIAGE_TOKEN }}
