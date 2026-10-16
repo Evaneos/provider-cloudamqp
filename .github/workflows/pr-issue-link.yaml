@@ -1,0 +1,17 @@
+name: "PR issue link"
+
+"on":
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
+permissions:
+  issues: read
+  pull-requests: read
+
+jobs:
+  pr-issue-link:
+    uses: Evaneos/github-actions/.github/workflows/pr-issue-link.yaml@v0
