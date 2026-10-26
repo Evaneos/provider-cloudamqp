@@ -42,4 +42,3 @@ jobs:
       repository_name: ${{ github.event.repository.name }}
     secrets:
       PLATFORM_TRIAGE_APP_PRIVATE_KEY: ${{ secrets.PLATFORM_TRIAGE_APP_PRIVATE_KEY }}
-      PLATFORM_TRIAGE_TOKEN: ${{ secrets.PLATFORM_TRIAGE_TOKEN }}
